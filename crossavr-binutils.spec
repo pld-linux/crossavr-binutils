@@ -93,7 +93,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
+%doc README
 %attr(755,root,root) %{_bindir}/%{target}-*
+%dir %{arch}
 %dir %{arch}/bin
 %attr(755,root,root) %{arch}/bin/*
 %dir %{arch}/lib
