@@ -6,7 +6,7 @@ Summary(pl):	Narzêdzia GNU dla programistów
 Summary(pt_BR):	Utilitários para desenvolvimento de binários da GNU
 Summary(tr):	GNU geliþtirme araçlarý
 Name:		crossavr-binutils
-Version:	2.11.92.0.12.3
+Version:	2.13.90.0.4
 Release:	1
 License:	GPL
 Group:		Development/Tools
@@ -74,7 +74,8 @@ install -d $RPM_BUILD_ROOT%{_prefix}
 
 %{__make} install \
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
-	mandir=$RPM_BUILD_ROOT%{_mandir}
+	mandir=$RPM_BUILD_ROOT%{_mandir} \
+	infodir=$RPM_BUILD_ROOT%{_infodir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
