@@ -86,4 +86,5 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{arch}/bin/*
 %dir %{arch}/lib
 %dir %{arch}/lib/*
+%{arch}/lib/*/*
 %{_mandir}/man?/%{target}-*
