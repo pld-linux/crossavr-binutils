@@ -5,7 +5,7 @@ Summary(pl):	Skro¶ne narzêdzia programistyczne GNU dla AVR - binutils
 Summary(pt_BR):	Utilitários para desenvolvimento de binários da GNU - AVR binutils
 Summary(tr):	GNU geliþtirme araçlarý - AVR binutils
 Name:		crossavr-binutils
-Version:	2.14.90.0.8
+Version:	2.15.91.0.1
 Release:	1
 License:	GPL
 Group:		Development/Tools
