@@ -11,6 +11,7 @@ Release:	1
 License:	GPL
 Group:		Development/Tools
 Source0:	ftp://ftp.kernel.org/pub/linux/devel/binutils/binutils-%{version}.tar.bz2
+# Source0-md5:	afe2cc264f9a263e93d28a279d9ebb8a
 URL:		http://sourceware.cygnus.com/binutils/
 Prereq:		/sbin/ldconfig
 BuildRequires:	flex
