@@ -11,12 +11,11 @@ License:	GPL
 Group:		Development/Tools
 Source0:	ftp://ftp.kernel.org/pub/linux/devel/binutils/binutils-%{version}.tar.bz2
 # Source0-md5:	b5b1608f7308c487c0f3af8e4592a71a
-URL:		http://sourceware.cygnus.com/binutils/
-Prereq:		/sbin/ldconfig
-BuildRequires:	flex
-BuildRequires:	bison
-BuildRequires:	perl-devel
+URL:		http://sources.redhat.com/binutils/
 BuildRequires:	bash
+BuildRequires:	bison
+BuildRequires:	flex
+BuildRequires:	perl-devel
 %ifarch sparc sparc32
 BuildRequires:	sparc32
 %endif
@@ -54,7 +53,8 @@ Ten pakiet zawiera wersjê skro¶n± generuj±c± kod dla Atmel AVR.
 
 %build
 # ldscripts won't be generated properly if SHELL is not bash...
-CFLAGS="%{rpmcflags}" LDFLAGS="%{rpmldflags}" \
+CFLAGS="%{rpmcflags}" \
+LDFLAGS="%{rpmldflags}" \
 CONFIG_SHELL="/bin/bash" \
 %ifarch sparc
 sparc32 \
@@ -66,7 +66,9 @@ sparc32 \
 	--mandir=%{_mandir} \
 	--target=%{target}
 
-%{__make} tooldir=%{_prefix} EXEEXT="" all
+%{__make} all \
+	tooldir=%{_prefix} \
+	EXEEXT=""
 
 %install
 rm -rf $RPM_BUILD_ROOT
