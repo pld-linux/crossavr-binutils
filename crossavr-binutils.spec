@@ -1,10 +1,9 @@
-Summary:	GNU Binary Utility Development Utilities
-Summary(de):	GNU Binary Utility Development Utilities
-Summary(es):	Utilitarios para desarrollo de binarios de la GNU
-Summary(fr):	Utilitaires de développement binaire de GNU
-Summary(pl):	Narzêdzia GNU dla programistów
-Summary(pt_BR):	Utilitários para desenvolvimento de binários da GNU
-Summary(tr):	GNU geliþtirme araçlarý
+Summary:	Cross AVR GNU binary utility development utilities - binutils
+Summary(es):	Utilitarios para desarrollo de binarios de la GNU - AVR binutils
+Summary(fr):	Utilitaires de développement binaire de GNU - AVR binutils
+Summary(pl):	Skro¶ne narzêdzia programistyczne GNU dla AVR - binutils
+Summary(pt_BR):	Utilitários para desenvolvimento de binários da GNU - AVR binutils
+Summary(tr):	GNU geliþtirme araçlarý - AVR binutils
 Name:		crossavr-binutils
 Version:	2.13.90.0.4
 Release:	1
@@ -40,7 +39,7 @@ Binutils is a collection of binary utilities, including:
 - addr2line - convert addresses to file and line,
 - nlmconv - convert object code into an NLM.
 
-Cross version for Atmel AVR.
+This package contains the cross version for Atmel AVR.
 
 %description -l pl
 Pakiet binutils zawiera zestaw narzêdzi umo¿liwiaj±cych kompilacjê
@@ -48,7 +47,7 @@ programów. Znajduj± siê tutaj miêdzy innymi assembler, konsolidator
 (linker), a tak¿e inne narzêdzia do manipulowania binarnymi plikami
 programów i bibliotek.
 
-Wersja cross generuj±ca dla Atmel AVR.
+Ten pakiet zawiera wersjê skro¶n± generuj±c± kod dla Atmel AVR.
 
 %prep
 %setup -q -n binutils-%{version}
