@@ -12,11 +12,11 @@ Group:		Development/Tools
 Source0:	ftp://ftp.kernel.org/pub/linux/devel/binutils/binutils-%{version}.tar.bz2
 # Source0-md5:	3e28792a585e14b57838cd24130a24dd
 URL:		http://sources.redhat.com/binutils/
+BuildRequires:	automake
 BuildRequires:	bash
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gettext-devel
-BuildRequires:	perl-devel
 %ifarch sparc sparc32
 BuildRequires:	sparc32
 %endif
@@ -53,6 +53,8 @@ Ten pakiet zawiera wersjê skro¶n± generuj±c± kod dla Atmel AVR.
 %setup -q -n binutils-%{version}
 
 %build
+cp /usr/share/automake/config.sub .
+
 # ldscripts won't be generated properly if SHELL is not bash...
 CFLAGS="%{rpmcflags}" \
 LDFLAGS="%{rpmldflags}" \
@@ -63,8 +65,9 @@ sparc32 \
 ./configure \
 	--disable-shared \
 	--prefix=%{_prefix} \
-	--infodir=%{_infodir} \
+	--libdir=%{_libdir} \
 	--mandir=%{_mandir} \
+	--infodir=%{_infodir} \
 	--target=%{target}
 
 %{__make} all \
@@ -79,6 +82,10 @@ install -d $RPM_BUILD_ROOT%{_prefix}
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
 	mandir=$RPM_BUILD_ROOT%{_mandir} \
 	infodir=$RPM_BUILD_ROOT%{_infodir}
+
+# remove these man pages unless we cross-build for win*/netware platforms.
+# however, this should be done in Makefiles.
+rm -f $RPM_BUILD_ROOT%{_mandir}/man1/{*dlltool,*nlmconv,*windres}.1
 
 %clean
 rm -rf $RPM_BUILD_ROOT
