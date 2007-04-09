@@ -5,12 +5,16 @@ Summary(pl):	Skro¶ne narzêdzia programistyczne GNU dla AVR - binutils
 Summary(pt_BR):	Utilitários para desenvolvimento de binários da GNU - AVR binutils
 Summary(tr):	GNU geliþtirme araçlarý - AVR binutils
 Name:		crossavr-binutils
-Version:	2.16.91.0.7
+Version:	2.17
 Release:	1
 License:	GPL
 Group:		Development/Tools
-Source0:	ftp://ftp.kernel.org/pub/linux/devel/binutils/binutils-%{version}.tar.bz2
-# Source0-md5:	26c3fddb07bfe3128d2e09e628eb33a0
+Source0:	http://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
+# Source0-md5:	e26e2e06b6e4bf3acf1dc8688a94c0d1
+Patch0:		%{name}-aa.patch
+Patch1:		%{name}-atmega256x.patch
+Patch2:		%{name}-coff-avr.patch
+Patch3:		%{name}-newdevices.patch
 URL:		http://sources.redhat.com/binutils/
 BuildRequires:	automake
 BuildRequires:	bash
@@ -51,6 +55,10 @@ Ten pakiet zawiera wersjê skro¶n± generuj±c± kod dla Atmel AVR.
 
 %prep
 %setup -q -n binutils-%{version}
+%patch0 -p0
+%patch1 -p0
+%patch2 -p0
+%patch3 -p0
 
 %build
 cp /usr/share/automake/config.sub .
@@ -87,6 +95,10 @@ install -d $RPM_BUILD_ROOT%{_prefix}
 # remove these man pages unless we cross-build for win*/netware platforms.
 # however, this should be done in Makefiles.
 rm -f $RPM_BUILD_ROOT%{_mandir}/man1/{*dlltool,*nlmconv,*windres}.1
+
+rm -f $RPM_BUILD_ROOT%{_datadir}/locale/*/LC_MESSAGES/*.mo
+rm -f $RPM_BUILD_ROOT%{_libdir}/libiberty.a
+rm -rf $RPM_BUILD_ROOT%{_infodir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
