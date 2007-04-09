@@ -88,6 +88,10 @@ install -d $RPM_BUILD_ROOT%{_prefix}
 # however, this should be done in Makefiles.
 rm -f $RPM_BUILD_ROOT%{_mandir}/man1/{*dlltool,*nlmconv,*windres}.1
 
+rm -f $RPM_BUILD_ROOT%{_datadir}/locale/*/LC_MESSAGES/*.mo
+rm -f $RPM_BUILD_ROOT%{_libdir}/libiberty.a
+rm -rf $RPM_BUILD_ROOT%{_infodir}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
