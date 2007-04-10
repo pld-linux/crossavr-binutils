@@ -6,7 +6,7 @@ Summary(pt_BR):	Utilitários para desenvolvimento de binários da GNU - AVR binuti
 Summary(tr):	GNU geliþtirme araçlarý - AVR binutils
 Name:		crossavr-binutils
 Version:	2.17
-Release:	1
+Release:	2
 License:	GPL
 Group:		Development/Tools
 Source0:	http://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
