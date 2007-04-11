@@ -5,12 +5,15 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla AVR - binutils
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - AVR binutils
 Summary(tr.UTF-8):	GNU geliştirme araçları - AVR binutils
 Name:		crossavr-binutils
-Version:	2.17.50.0.2
+Version:	2.17.50.0.14
 Release:	1
 License:	GPL
 Group:		Development/Tools
 Source0:	ftp://ftp.kernel.org/pub/linux/devel/binutils/binutils-%{version}.tar.bz2
-# Source0-md5:	af337e084c3a4c019fd297a622889d40
+# Source0-md5:	4ddab973ad9c5169d8f8296bdf67b3f7
+Patch0:		%{name}-aa.patch
+Patch1:		%{name}-coff-avr.patch
+Patch2:		%{name}-newdevices.patch
 URL:		http://sources.redhat.com/binutils/
 BuildRequires:	automake
 BuildRequires:	bash
@@ -51,6 +54,9 @@ Ten pakiet zawiera wersję skrośną generującą kod dla Atmel AVR.
 
 %prep
 %setup -q -n binutils-%{version}
+%patch0 -p0
+%patch1 -p0
+%patch2 -p1
 
 %build
 cp /usr/share/automake/config.sub .
