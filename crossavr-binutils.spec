@@ -20,6 +20,7 @@ BuildRequires:	bash
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gettext-devel
+BuildRequires:	texinfo
 %ifarch sparc sparc32
 BuildRequires:	sparc32
 %endif
