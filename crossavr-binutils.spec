@@ -73,8 +73,8 @@ sparc32 \
 	--libdir=%{_libdir} \
 	--mandir=%{_mandir} \
 	--infodir=%{_infodir} \
-	--host=%{_host} \
-	--build=%{_build} \
+	--host=%{_target_platform} \
+	--build=%{_target_platform} \
 	--target=%{target}
 
 %{__make} all \
@@ -119,4 +119,4 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{arch}/lib/*
 %{arch}/lib/*/*
 %{_mandir}/man?/%{target}-*
-%attr(755,root,root) %{_prefix}/%{_host}/avr/lib/lib*.so
+%attr(755,root,root) %{_prefix}/%{_target_platform}/avr/lib/lib*.so
