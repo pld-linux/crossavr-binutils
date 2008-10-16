@@ -5,12 +5,12 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla AVR - binutils
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - AVR binutils
 Summary(tr.UTF-8):	GNU geliştirme araçları - AVR binutils
 Name:		crossavr-binutils
-Version:	2.18.50.0.8
+Version:	2.18.50.0.9
 Release:	1
 License:	GPL
 Group:		Development/Tools
 Source0:	ftp://ftp.kernel.org/pub/linux/devel/binutils/binutils-%{version}.tar.bz2
-# Source0-md5:	a49df3481468f281f42afbf915e10db2
+# Source0-md5:	68e3510d9c790b134450c0a243c251cd
 Patch0:		%{name}-aa.patch
 Patch1:		%{name}-coff-avr.patch
 Patch2:		%{name}-avr-size.patch
