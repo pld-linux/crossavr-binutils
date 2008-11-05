@@ -70,7 +70,7 @@ CONFIG_SHELL="/bin/bash" \
 sparc32 \
 %endif
 ./configure \
-	--enable-shared \
+	--disable-shared \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
 	--mandir=%{_mandir} \
@@ -121,4 +121,3 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{arch}/lib/*
 %{arch}/lib/*/*
 %{_mandir}/man?/%{target}-*
-%attr(755,root,root) %{_prefix}/%{_target_platform}/avr/lib/lib*.so
