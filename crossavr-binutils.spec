@@ -5,15 +5,19 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla AVR - binutils
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - AVR binutils
 Summary(tr.UTF-8):	GNU geliştirme araçları - AVR binutils
 Name:		crossavr-binutils
-Version:	2.18.50.0.9
+Version:	2.19.1
 Release:	1
 License:	GPL
 Group:		Development/Tools
-Source0:	ftp://ftp.kernel.org/pub/linux/devel/binutils/binutils-%{version}.tar.bz2
-# Source0-md5:	68e3510d9c790b134450c0a243c251cd
-Patch0:		%{name}-aa.patch
-Patch1:		%{name}-coff-avr.patch
-Patch2:		%{name}-avr-size.patch
+Source0:	ftp://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
+# Source0-md5:	09a8c5821a2dfdbb20665bc0bd680791
+Patch0:		%{name}-avr-size.patch
+Patch1:		%{name}-avr-coff.patch
+Patch2:		%{name}-new-sections.patch
+Patch3:		%{name}-data-origin.patch
+Patch4:		%{name}-xmega.patch
+Patch5:		%{name}-xmega2.patch
+Patch6:		%{name}-atmega32u6.patch
 URL:		http://sources.redhat.com/binutils/
 BuildRequires:	automake
 BuildRequires:	bash
@@ -56,8 +60,12 @@ Ten pakiet zawiera wersję skrośną generującą kod dla Atmel AVR.
 %prep
 %setup -q -n binutils-%{version}
 %patch0 -p0
-%patch1 -p1
+%patch1 -p0
 %patch2 -p0
+%patch3 -p0
+%patch4 -p0
+%patch5 -p0
+%patch6 -p0
 
 %build
 cp /usr/share/automake/config.sub .
@@ -78,6 +86,15 @@ sparc32 \
 	--host=%{_target_platform} \
 	--build=%{_target_platform} \
 	--target=%{target}
+
+# We have to regenerate headers after patching.
+%{__make} configure-host \
+	tooldir=%{_prefix} \
+	EXEEXT=""
+
+%{__make} -C bfd headers \
+	tooldir=%{_prefix} \
+	EXEEXT=""
 
 %{__make} all \
 	tooldir=%{_prefix} \
