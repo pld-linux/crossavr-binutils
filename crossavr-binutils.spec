@@ -18,6 +18,7 @@ Patch3:		%{name}-data-origin.patch
 Patch4:		%{name}-xmega.patch
 Patch5:		%{name}-xmega2.patch
 Patch6:		%{name}-atmega32u6.patch
+Patch7:		%{name}-gcc44.patch
 URL:		http://sources.redhat.com/binutils/
 BuildRequires:	automake
 BuildRequires:	bash
@@ -66,6 +67,7 @@ Ten pakiet zawiera wersję skrośną generującą kod dla Atmel AVR.
 %patch4 -p0
 %patch5 -p0
 %patch6 -p0
+%patch7 -p1
 
 %build
 cp /usr/share/automake/config.sub .
