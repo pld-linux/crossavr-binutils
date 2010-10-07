@@ -5,20 +5,17 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla AVR - binutils
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - AVR binutils
 Summary(tr.UTF-8):	GNU geliştirme araçları - AVR binutils
 Name:		crossavr-binutils
-Version:	2.19.1
+Version:	2.20.1
 Release:	1
 License:	GPL
 Group:		Development/Tools
 Source0:	ftp://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
-# Source0-md5:	09a8c5821a2dfdbb20665bc0bd680791
+# Source0-md5:	9cdfb9d6ec0578c166d3beae5e15c4e5
 Patch0:		%{name}-avr-size.patch
 Patch1:		%{name}-avr-coff.patch
 Patch2:		%{name}-new-sections.patch
-Patch3:		%{name}-data-origin.patch
-Patch4:		%{name}-xmega.patch
-Patch5:		%{name}-xmega2.patch
-Patch6:		%{name}-atmega32u6.patch
-Patch7:		%{name}-gcc44.patch
+Patch3:		%{name}-xmega.patch
+Patch4:		%{name}-new-devices.patch
 URL:		http://sources.redhat.com/binutils/
 BuildRequires:	automake
 BuildRequires:	bash
@@ -65,9 +62,6 @@ Ten pakiet zawiera wersję skrośną generującą kod dla Atmel AVR.
 %patch2 -p0
 %patch3 -p0
 %patch4 -p0
-%patch5 -p0
-%patch6 -p0
-%patch7 -p1
 
 %build
 cp /usr/share/automake/config.sub .
@@ -111,12 +105,6 @@ install -d $RPM_BUILD_ROOT%{_prefix}
 	mandir=$RPM_BUILD_ROOT%{_mandir} \
 	infodir=$RPM_BUILD_ROOT%{_infodir} \
 	libdir=$RPM_BUILD_ROOT%{_libdir}
-cd bfd
-%{__make} install_libbfd DESTDIR=$RPM_BUILD_ROOT
-cd ..
-cd opcodes	
-%{__make} install_libopcodes DESTDIR=$RPM_BUILD_ROOT
-cd ..
 
 # remove these man pages unless we cross-build for win*/netware platforms.
 # however, this should be done in Makefiles.
