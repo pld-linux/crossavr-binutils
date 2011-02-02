@@ -22,6 +22,7 @@ BuildRequires:	bash
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gettext-devel
+BuildRequires:	perl-tools-pod
 BuildRequires:	texinfo
 %ifarch sparc sparc32
 BuildRequires:	sparc32
