@@ -347,9 +347,9 @@ AVR specific only
 +  int rammax = 0;
 +  int eeprommax = 0;
 +  asection *section; 
-+  bfd_size_type datasize = 0;
-+  bfd_size_type textsize = 0;
-+  bfd_size_type bsssize = 0;
++  bfd_size_type avr_datasize = 0;
++  bfd_size_type avr_textsize = 0;
++  bfd_size_type avr_bsssize = 0;
 +  bfd_size_type bootloadersize = 0;
 +  bfd_size_type noinitsize = 0;
 +  bfd_size_type eepromsize = 0;
@@ -364,11 +364,11 @@ AVR specific only
 +  }
 +
 +  if ((section = bfd_get_section_by_name (file, ".data")) != NULL)
-+    datasize = bfd_section_size (file, section);
++    avr_datasize = bfd_section_size (file, section);
 +  if ((section = bfd_get_section_by_name (file, ".text")) != NULL)
-+    textsize = bfd_section_size (file, section);
++    avr_textsize = bfd_section_size (file, section);
 +  if ((section = bfd_get_section_by_name (file, ".bss")) != NULL)
-+    bsssize = bfd_section_size (file, section);
++    avr_bsssize = bfd_section_size (file, section);
 +  if ((section = bfd_get_section_by_name (file, ".bootloader")) != NULL)
 +    bootloadersize = bfd_section_size (file, section);
 +  if ((section = bfd_get_section_by_name (file, ".noinit")) != NULL)
@@ -376,8 +376,8 @@ AVR specific only
 +  if ((section = bfd_get_section_by_name (file, ".eeprom")) != NULL)
 +    eepromsize = bfd_section_size (file, section);
 +  
-+  bfd_size_type text = textsize + datasize + bootloadersize;
-+  bfd_size_type data = datasize + bsssize + noinitsize;
++  bfd_size_type text = avr_textsize + avr_datasize + bootloadersize;
++  bfd_size_type data = avr_datasize + avr_bsssize + noinitsize;
 +  bfd_size_type eeprom = eepromsize;
 +  
 +  printf ("AVR Memory Usage\n"
