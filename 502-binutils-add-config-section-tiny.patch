@@ -1,0 +1,32 @@
+diff -Naurp ld/scripttempl/avrtiny10.sc ld/scripttempl/avrtiny10.sc
+--- ld/scripttempl/avrtiny10.sc	2012-04-03 11:50:08.000000000 +0530
++++ ld/scripttempl/avrtiny10.sc	2012-04-03 11:52:48.000000000 +0530
+@@ -6,9 +6,13 @@ MEMORY
+ {
+   text   (rx)   : ORIGIN = $TEXT_ORIGIN, LENGTH = $TEXT_LENGTH
+   data   (rw!x) : ORIGIN = $DATA_ORIGIN, LENGTH = $DATA_LENGTH
+-  lock      (rw!x) : ORIGIN = 0x3F00, LENGTH = 2
+-  signature (rw!x) : ORIGIN = 0x3FC0, LENGTH = 4
+-/* REVISIT: fuse(rw!x) : */
++
++  /* Provide offsets for config, lock and signature to match
++     production file format. Ignore offsets in datasheet.  */
++
++  config(rw!x)     : ORIGIN = 0x820000, LENGTH = 2
++  lock      (rw!x) : ORIGIN = 0x830000, LENGTH = 2
++  signature (rw!x) : ORIGIN = 0x840000, LENGTH = 4
+ }
+ 
+ SECTIONS
+@@ -202,6 +206,11 @@ SECTIONS
+     KEEP(*(.signature*))
+   } ${RELOCATING+ > signature}
+ 
++  .config ${RELOCATING-0}:
++  {
++    KEEP(*(.config*))
++  } ${RELOCATING+ > config}
++
+   /* Stabs debugging sections.  */
+   .stab 0 : { *(.stab) }
+   .stabstr 0 : { *(.stabstr) }

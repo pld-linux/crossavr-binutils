@@ -1,0 +1,31 @@
+diff -Naurp include/opcode/avr.h include/opcode/avr.h
+--- include/opcode/avr.h	2011-07-01 22:44:03.000000000 +0530
++++ include/opcode/avr.h	2011-12-22 11:56:43.000000000 +0530
+@@ -33,6 +33,7 @@
+ #define AVR_ISA_MOVW  0x1000 /* device has MOVW */
+ #define AVR_ISA_SPMX  0x2000 /* device has SPM Z[+] */
+ #define AVR_ISA_DES   0x4000 /* device has DES */
++#define AVR_ISA_USB   0x8000 /* device has USB */
+ 
+ #define AVR_ISA_TINY1 (AVR_ISA_1200 | AVR_ISA_LPM)
+ #define AVR_ISA_2xxx  (AVR_ISA_TINY1 | AVR_ISA_SRAM)
+@@ -53,6 +54,7 @@
+ #define AVR_ISA_M128  (AVR_ISA_M323 | AVR_ISA_ELPM | AVR_ISA_ELPMX)
+ #define AVR_ISA_M256  (AVR_ISA_M128 | AVR_ISA_EIND)
+ #define AVR_ISA_XMEGA (AVR_ISA_M256 | AVR_ISA_SPMX | AVR_ISA_DES)
++#define AVR_ISA_XMEGAU (AVR_ISA_XMEGA | AVR_ISA_USB)
+ 
+ #define AVR_ISA_AVR1   AVR_ISA_TINY1
+ #define AVR_ISA_AVR2   AVR_ISA_2xxx
+@@ -276,6 +278,11 @@ AVR_INSN (fmulsu,"a,a","000000111ddd1rrr
+ AVR_INSN (sts,  "i,r", "1001001ddddd0000", 2, AVR_ISA_2xxx, 0x9200)
+ AVR_INSN (lds,  "r,i", "1001000ddddd0000", 2, AVR_ISA_2xxx, 0x9000)
+ 
++AVR_INSN (xch,  "z,r", "1001001rrrrr0100", 1, AVR_ISA_XMEGAU, 0x9204)
++AVR_INSN (las,  "z,r", "1001001rrrrr0101", 1, AVR_ISA_XMEGAU, 0x9205)
++AVR_INSN (lac,  "z,r", "1001001rrrrr0110", 1, AVR_ISA_XMEGAU, 0x9206)
++AVR_INSN (lat,  "z,r", "1001001rrrrr0111", 1, AVR_ISA_XMEGAU, 0x9207)
++
+    /* Special case for b+0, `e' must be next entry after `b',
+       b={Y=1,Z=0}, ee={X=11,Y=10,Z=00}, !=1 if -e or e+ or X.  */
+ AVR_INSN (ldd,  "r,b", "10o0oo0dddddbooo", 1, AVR_ISA_2xxx, 0x8000)

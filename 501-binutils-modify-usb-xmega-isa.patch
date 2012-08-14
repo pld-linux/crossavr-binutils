@@ -1,0 +1,28 @@
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2012-03-30 19:35:59.000000000 +0530
++++ gas/config/tc-avr.c	2012-03-30 19:36:31.000000000 +0530
+@@ -306,7 +306,7 @@ static struct mcu_type_s mcu_types[] =
+   {"atxmega64d3", AVR_ISA_XMEGA,  bfd_mach_avrxmega4},
+   {"atxmega64d4", AVR_ISA_XMEGA,  bfd_mach_avrxmega4},
+   {"atxmega64a1", AVR_ISA_XMEGA,  bfd_mach_avrxmega5},
+-  {"atxmega64a1u",AVR_ISA_XMEGA,  bfd_mach_avrxmega5},
++  {"atxmega64a1u",AVR_ISA_XMEGAU,  bfd_mach_avrxmega5},
+   {"atxmega128a3", AVR_ISA_XMEGA, bfd_mach_avrxmega6},
+   {"atxmega128a3u",AVR_ISA_XMEGAU, bfd_mach_avrxmega6},
+   {"atxmega128b1", AVR_ISA_XMEGA, bfd_mach_avrxmega6},
+@@ -321,13 +321,13 @@ static struct mcu_type_s mcu_types[] =
+   {"atxmega256a3", AVR_ISA_XMEGA, bfd_mach_avrxmega6},
+   {"atxmega256a3u",AVR_ISA_XMEGAU, bfd_mach_avrxmega6},
+   {"atxmega256a3b",AVR_ISA_XMEGA, bfd_mach_avrxmega6},
+-  {"atxmega256a3bu",AVR_ISA_XMEGA,bfd_mach_avrxmega6},
++  {"atxmega256a3bu",AVR_ISA_XMEGAU,bfd_mach_avrxmega6},
+   {"atxmega256c3", AVR_ISA_XMEGAU, bfd_mach_avrxmega6},
+   {"atxmega256d3", AVR_ISA_XMEGA, bfd_mach_avrxmega6},
+   {"atxmega384c3", AVR_ISA_XMEGAU, bfd_mach_avrxmega6},
+   {"atxmega384d3", AVR_ISA_XMEGA, bfd_mach_avrxmega6},
+   {"atxmega128a1", AVR_ISA_XMEGA, bfd_mach_avrxmega7},
+-  {"atxmega128a1u", AVR_ISA_XMEGA, bfd_mach_avrxmega7},
++  {"atxmega128a1u", AVR_ISA_XMEGAU, bfd_mach_avrxmega7},
+   {"atxmega128a4u", AVR_ISA_XMEGAU, bfd_mach_avrxmega7},
+   {"attiny4",      AVR_ISA_AVRTINY10, bfd_mach_avrtiny10},
+   {"attiny5",      AVR_ISA_AVRTINY10, bfd_mach_avrtiny10},

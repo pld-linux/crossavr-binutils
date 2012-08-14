@@ -1,0 +1,61 @@
+diff -Naurp binutils/size.c binutils/size.c
+--- binutils/size.c	2011-11-29 19:16:45.000000000 +0530
++++ binutils/size.c	2011-11-29 19:20:58.000000000 +0530
+@@ -194,9 +194,11 @@ avr_device_t avr[] =
+ 	{"atmega325",     AVR32K,  AVR2K,  AVR1K},
+ 	{"atmega325a",    AVR32K,  AVR2K,  AVR1K},
+ 	{"atmega325p",    AVR32K,  AVR2K,  AVR1K},
++	{"atmega325pa",   AVR32K,  AVR2K,  AVR1K},
+ 	{"atmega3250",    AVR32K,  AVR2K,  AVR1K},
+ 	{"atmega3250a",   AVR32K,  AVR2K,  AVR1K},
+ 	{"atmega3250p",   AVR32K,  AVR2K,  AVR1K},
++	{"atmega3250pa",  AVR32K,  AVR2K,  AVR1K},
+ 	{"atmega328",     AVR32K,  AVR2K,  AVR1K},
+ 	{"atmega328p",    AVR32K,  AVR2K,  AVR1K},
+ 	{"atmega329",     AVR32K,  AVR2K,  AVR1K},
+@@ -206,9 +208,10 @@ avr_device_t avr[] =
+ 	{"atmega3290",    AVR32K,  AVR2K,  AVR1K},
+ 	{"atmega3290a",   AVR32K,  AVR2K,  AVR1K},
+ 	{"atmega3290p",   AVR32K,  AVR2K,  AVR1K},
++	{"atmega3290pa",  AVR32K,  AVR2K,  AVR1K},
+ 	{"atmega32hvb",   AVR32K,  AVR2K,  AVR1K},
++	{"atmega32hvbrevb",AVR32K, AVR2K,  AVR1K},
+ 	{"atmega32c1",    AVR32K,  AVR2K,  AVR1K},
+-   {"atmega32hvb",   AVR32K,  AVR2K,  AVR1K},
+ 	{"atmega32m1",    AVR32K,  AVR2K,  AVR1K},
+ 	{"atmega32u2",    AVR32K,  AVR1K,  AVR1K},
+ 	{"atmega32u4",    AVR32K,  2560UL, AVR1K},
+@@ -244,7 +247,8 @@ avr_device_t avr[] =
+ 	{"atmega169pa",   AVR16K,  AVR1K,  AVR512},
+ 	{"atmega16hva",   AVR16K,  768UL,  AVR256},
+ 	{"atmega16hva2",  AVR16K,  AVR1K,  AVR256},
+-   {"atmega16hvb",   AVR16K,  AVR1K,  AVR512},
++        {"atmega16hvb",   AVR16K,  AVR1K,  AVR512},
++        {"atmega16hvbrevb",AVR16K, AVR1K,  AVR512},
+ 	{"atmega16m1",    AVR16K,  AVR1K,  AVR512},
+ 	{"atmega16u2",    AVR16K,  AVR512, AVR512},
+ 	{"atmega16u4",    AVR16K,  1280UL, AVR512},
+diff -Naurp gas/doc/as.info gas/doc/as.info
+--- gas/doc/as.info	2011-11-29 19:16:25.000000000 +0530
++++ gas/doc/as.info	2011-11-29 19:20:58.000000000 +0530
+@@ -7248,7 +7248,7 @@ File: as.info,  Node: AVR Options,  Next
+      program memory space (MCU types: atmega16, atmega16a, atmega161,
+      atmega162, atmega163, atmega164a, atmega164p, atmega165,
+      atmega165a, atmega165p, atmega168, atmega168a, atmega168p,
+-     atmega169, atmega169a, atmega169p, atmega169pa, atmega32,
++     atmega169, atmega169a, atmega169p, atmega169pa, atmega16c1, atmega32,
+      atmega323, atmega324a, atmega324p, atmega325, atmega325a,
+      atmega325p, atmega325pa, atmega3250, atmega3250a, atmega3250p,
+      atmega3250pa, atmega328, atmega328p, atmega329, atmega329a,
+diff -Naurp gas/doc/c-avr.texi gas/doc/c-avr.texi
+--- gas/doc/c-avr.texi	2011-11-29 19:16:45.000000000 +0530
++++ gas/doc/c-avr.texi	2011-11-29 19:20:43.000000000 +0530
+@@ -67,7 +67,7 @@ Instruction set avr5 is for the enhanced
+ memory space (MCU types: at90pwm161, atmega16, atmega16a, atmega161, atmega162,
+ atmega163, atmega164a, atmega164p, atmega165, atmega165a, atmega165p, atmega168, 
+ atmega168a, atmega168p, atmega169, atmega169a, atmega169p, atmega169pa,
+-atmega32, atmega323, atmega324a, atmega324p, atmega325, atmega325a, atmega325p,
++atmega32, atmega323, atmega324a, atmega324p, atmega324pa, atmega325, atmega325a, atmega325p,
+ atmega325pa, atmega3250, atmega3250a, atmega3250p, atmega3250pa, atmega328,
+ atmega328p, atmega329, atmega329a, atmega329p, atmega329pa, atmega3290,
+ atmega3290a, atmega3290p, atmega3290pa, atmega406, atmega64, atmega640,

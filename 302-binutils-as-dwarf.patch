@@ -1,0 +1,19 @@
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2011-03-29 23:46:15.000000000 +0530
++++ gas/config/tc-avr.c	2011-12-16 12:28:16.000000000 +0530
+@@ -24,6 +24,7 @@
+ #include "as.h"
+ #include "safe-ctype.h"
+ #include "subsegs.h"
++#include "dwarf2dbg.h"
+ #include "dw2gencfi.h"
+ 
+ 
+@@ -1453,6 +1454,7 @@ md_assemble (char *str)
+ 
+   dwarf2_emit_insn (0);
+ 
++  dwarf2_emit_insn (0);
+   /* We used to set input_line_pointer to the result of get_operands,
+      but that is wrong.  Our caller assumes we don't change it.  */
+   {

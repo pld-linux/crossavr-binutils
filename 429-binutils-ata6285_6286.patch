@@ -1,0 +1,36 @@
+diff -Naurp binutils/size.c binutils/size.c
+--- binutils/size.c	2012-02-15 13:57:10.000000000 +0530
++++ binutils/size.c	2012-02-16 16:51:58.000000000 +0530
+@@ -319,6 +319,8 @@ avr_device_t avr[] =
+ 	{"at90s8515",     AVR8K,   AVR512, AVR512},
+ 	{"at90s8535",     AVR8K,   AVR512, AVR512},
+ 	{"at90usb82",     AVR8K,   AVR512, AVR512},
++	{"ata6285",       AVR8K,   AVR512, 320UL},
++	{"ata6286",       AVR8K,   AVR512, 320UL},
+ 	{"ata6289",       AVR8K,   AVR512, 320UL},
+ 	{"atmega8",       AVR8K,   AVR1K,  AVR512},
+ 	{"atmega8a",      AVR8K,   AVR1K,  AVR512},
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2012-02-15 13:57:09.000000000 +0530
++++ gas/config/tc-avr.c	2012-02-17 11:06:57.000000000 +0530
+@@ -148,6 +148,8 @@ static struct mcu_type_s mcu_types[] =
+   {"attiny1634", AVR_ISA_AVR35,   bfd_mach_avr35},
+   {"atmega8",    AVR_ISA_M8,      bfd_mach_avr4},
+   {"atmega8a",   AVR_ISA_M8,      bfd_mach_avr4},
++  {"ata6285",    AVR_ISA_AVR4,    bfd_mach_avr4},
++  {"ata6286",    AVR_ISA_AVR4,    bfd_mach_avr4},
+   {"atmega48",   AVR_ISA_AVR4,    bfd_mach_avr4},
+   {"atmega48a",  AVR_ISA_AVR4,    bfd_mach_avr4},
+   {"atmega48pa", AVR_ISA_AVR4,    bfd_mach_avr4},
+diff -Naurp gas/doc/c-avr.texi gas/doc/c-avr.texi
+--- gas/doc/c-avr.texi	2012-02-15 13:57:09.000000000 +0530
++++ gas/doc/c-avr.texi	2012-02-16 16:51:58.000000000 +0530
+@@ -61,7 +61,7 @@ atmega8u2, atmega16u2, atmega32u2).
+ Instruction set avr4 is for the enhanced AVR core with up to 8K program
+ memory space (MCU types: atmega48, atmega48a, atmega48pa, atmega48p, atmega8, atmega8a
+ atmega88, atmega88a, atmega88p, atmega88pa, atmega8515, atmega8535, atmega8hva,
+-at90pwm1, at90pwm2, at90pwm2b, at90pwm3, at90pwm3b, at90pwm81).
++at90pwm1, at90pwm2, at90pwm2b, at90pwm3, at90pwm3b, at90pwm81, ata6285, ata6286).
+ 
+ Instruction set avr5 is for the enhanced AVR core with up to 128K program
+ memory space (MCU types: at90pwm161, atmega16, atmega16a, atmega161, atmega162,

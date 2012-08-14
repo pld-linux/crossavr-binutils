@@ -1,0 +1,55 @@
+diff -Naurp binutils/size.c binutils/size.c
+--- binutils/size.c	2012-03-27 20:30:42.000000000 +0530
++++ binutils/size.c	2012-03-29 10:32:25.000000000 +0530
+@@ -194,9 +194,11 @@ avr_device_t avr[] =
+ 	{"at90scr100",    AVR64K,  AVR4K,  AVR2K},
+ 	{"at90usb646",    AVR64K,  AVR4K,  AVR2K},
+ 	{"at90usb647",    AVR64K,  AVR4K,  AVR2K},
++	{"ata5505",       AVR16K,  AVR512, AVR512},
+ 	{"ata5790",       AVR16K,  AVR512, AVR2112},
+ 	{"ata5790n",      AVR16K,  AVR512, AVR2112},
+ 	{"ata5795",       AVR8K,   AVR512, AVR2112},
++	{"ata5272",       AVR8K,   AVR512, AVR512},
+ 	{"atmega64",      AVR64K,  AVR4K,  AVR2K},
+ 	{"atmega64a",     AVR64K,  AVR4K,  AVR2K},
+ 	{"atmega640",     AVR64K,  AVR8K,  AVR4K},
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2012-03-27 20:30:42.000000000 +0530
++++ gas/config/tc-avr.c	2012-03-30 13:57:40.000000000 +0530
+@@ -108,6 +108,7 @@ static struct mcu_type_s mcu_types[] =
+   {"at90s8515",  AVR_ISA_AVR2,    bfd_mach_avr2},
+   {"at90c8534",  AVR_ISA_AVR2,    bfd_mach_avr2},
+   {"at90s8535",  AVR_ISA_AVR2,    bfd_mach_avr2},
++  {"ata5272",    AVR_ISA_AVR25,   bfd_mach_avr25},
+   {"attiny13",   AVR_ISA_AVR25,   bfd_mach_avr25},
+   {"attiny13a",  AVR_ISA_AVR25,   bfd_mach_avr25},
+   {"attiny2313", AVR_ISA_AVR25,   bfd_mach_avr25},
+@@ -143,6 +144,7 @@ static struct mcu_type_s mcu_types[] =
+   {"attiny167",  AVR_ISA_AVR35,   bfd_mach_avr35},
+   {"at90usb82",  AVR_ISA_AVR35,   bfd_mach_avr35},
+   {"at90usb162", AVR_ISA_AVR35,   bfd_mach_avr35},
++  {"ata5505",    AVR_ISA_AVR35,   bfd_mach_avr35},
+   {"atmega8u2",  AVR_ISA_AVR35,   bfd_mach_avr35},
+   {"atmega16u2", AVR_ISA_AVR35,   bfd_mach_avr35},
+   {"atmega32u2", AVR_ISA_AVR35,   bfd_mach_avr35},
+diff -Naurp gas/doc/c-avr.texi gas/doc/c-avr.texi
+--- gas/doc/c-avr.texi	2012-03-27 20:30:42.000000000 +0530
++++ gas/doc/c-avr.texi	2012-03-30 13:59:41.000000000 +0530
+@@ -46,7 +46,7 @@ space plus the MOVW instruction (MCU typ
+ attiny2313a, attiny24, attiny24a, attiny4313, attiny44, attiny44a, attiny84,
+ attiny84a, attiny25, attiny45, attiny85, attiny261, attiny261a, attiny461,
+ attiny461a, attiny861, attiny861a, attiny87, attiny43u, attiny48, attiny88,
+-attiny80, attiny828, at86rf401, ata6289).
++attiny80, attiny828, at86rf401, ata6289, ata5272).
+ 
+ Instruction set avr3 is for the classic AVR core with up to 128K program
+ memory space (MCU types: at43usb355, at76c711).
+@@ -56,7 +56,7 @@ memory space (MCU types: atmega103, at43
+ 
+ Instruction set avr35 is for classic AVR core plus MOVW, CALL, and JMP
+ instructions (MCU types: attiny167, attiny1634, at90usb82, at90usb162,
+-atmega8u2, atmega16u2, atmega32u2).
++atmega8u2, atmega16u2, atmega32u2, ata5505).
+ 
+ Instruction set avr4 is for the enhanced AVR core with up to 8K program
+ memory space (MCU types: atmega48, atmega48a, atmega48pa, atmega48p, atmega8, atmega8a

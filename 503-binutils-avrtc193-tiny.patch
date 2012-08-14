@@ -1,0 +1,221 @@
+--- bfd/elf32-avr.c	2012-04-19 14:45:03.000000000 +0530
++++ bfd/elf32-avr.c	2012-04-19 12:04:04.000000000 +0530
+@@ -516,6 +516,21 @@ static reloc_howto_type elf_avr_howto_ta
+ 	 0x000000ff,		/* src_mask */
+ 	 0x000000ff,		/* dst_mask */
+ 	 FALSE),		/* pcrel_offset */
++  /* 7 bit immediate for LDS/STS in AVR8L (Tiny architecture) */
++  HOWTO (R_AVR_7_LDS16,         /* type */
++         0,
++         0,
++         8,
++         FALSE,
++         0,
++         complain_overflow_bitfield,
++         bfd_elf_generic_reloc,
++         "R_AVR_7_LDS16",
++         FALSE,
++         0xffff,
++         0xffff,
++         FALSE),
++
+ };
+ 
+ /* Map BFD reloc types to AVR ELF reloc types.  */
+@@ -554,7 +569,8 @@ static const struct avr_reloc_map avr_re
+   { BFD_RELOC_AVR_LDI,              R_AVR_LDI  },
+   { BFD_RELOC_AVR_6,                R_AVR_6    },
+   { BFD_RELOC_AVR_6_ADIW,           R_AVR_6_ADIW },
+-  { BFD_RELOC_8,                    R_AVR_8 }
++  { BFD_RELOC_8,                    R_AVR_8 },
++  { BFD_RELOC_AVR_7_LDS16,          R_AVR_7_LDS16 }
+ };
+ 
+ /* Meant to be filled one day with the wrap around address for the
+@@ -1085,6 +1101,17 @@ avr_final_link_relocate (reloc_howto_typ
+       bfd_put_16 (input_bfd, (bfd_vma) srel & 0xffff, contents+2);
+       break;
+ 
++    case R_AVR_7_LDS16:
++      contents += rel->r_offset;
++      srel = (bfd_signed_vma) relocation + rel->r_addend;
++      if ((srel & 0xFFFF) < 0x40 || (srel & 0xFFFF) > 0xbf)
++        return bfd_reloc_outofrange;
++      srel = srel & 0x7f;
++      x = bfd_get_16 (input_bfd, contents);
++      x |= (srel & 0x0f) | ((srel & 0x30) << 5) | ((srel & 0x40) << 2);
++      bfd_put_16 (input_bfd, x, contents);
++      break;
++
+     case R_AVR_16_PM:
+       use_stubs = (!htab->no_stubs);
+       contents += rel->r_offset;
+--- bfd/reloc.c	2011-07-24 19:50:06.000000000 +0530
++++ bfd/reloc.c	2012-04-19 14:40:17.000000000 +0530
+@@ -4314,6 +4314,11 @@ ENUM
+ ENUMDOC
+   This is a 6 bit reloc for the AVR that stores offset for adiw/sbiw
+   instructions
++ENUM
++  BFD_RELOC_AVR_7_LDS16
++ENUMDOC
++  This is a 7 bit reloc for the AVR that stores offset for 16bit sts/lds
++  instructions meant for tiny parts
+ 
+ ENUM
+   BFD_RELOC_RX_NEG8
+--- gas/config/tc-avr.c	2012-04-19 14:45:03.000000000 +0530
++++ gas/config/tc-avr.c	2012-04-19 12:04:04.000000000 +0530
+@@ -870,17 +870,12 @@ avr_operand (struct avr_opcodes_s *opcod
+ 	  op_mask = avr_get_constant (str, 31);
+ 	  str = input_line_pointer;
+ 	}
+-	  if (strcmp(avr_mcu->name, "avrtiny10") == 0 
+-	     || strcmp(avr_mcu->name, "attiny10") == 0
+-	     || strcmp(avr_mcu->name, "attiny4")  == 0
+-	     || strcmp(avr_mcu->name, "attiny5")  == 0
+-	     || strcmp(avr_mcu->name, "attiny9")  == 0
+-	     || strcmp(avr_mcu->name, "attiny20") == 0
+-	     || strcmp(avr_mcu->name, "attiny40") == 0)
+-	{
+-		  if(op_mask < 16)
+-		  as_bad (_("register number above 15 required"));
+-	}
++
++      if (avr_mcu->mach == bfd_mach_avrtiny10)
++      {
++        if (op_mask < 16 || op_mask > 31)
++           as_bad (_("register not supported"));
++      } 
+ 
+       if (op_mask <= 31)
+ 	{
+@@ -1020,6 +1015,12 @@ avr_operand (struct avr_opcodes_s *opcod
+ 		   &op_expr, FALSE, BFD_RELOC_16);
+       break;
+ 
++    case 'j':
++      str = parse_exp (str, &op_expr);
++      fix_new_exp (frag_now, where, opcode->insn_size * 2,
++                   &op_expr, FALSE, BFD_RELOC_AVR_7_LDS16);
++      break;
++
+     case 'M':
+       {
+ 	bfd_reloc_code_real_type r_type;
+@@ -1328,6 +1329,16 @@ md_apply_fix (fixS *fixP, valueT * valP,
+ 	  bfd_putl16 ((bfd_vma) insn | LDI_IMMEDIATE (value), where);
+ 	  break;
+ 
++        case BFD_RELOC_AVR_7_LDS16:
++          if ((value < 0x40) || (value > 0xBF))
++            as_bad_where (fixP->fx_file, fixP->fx_line,
++                          _("operand out of range: 0x%lx"), (unsigned long)value);   
++          insn |= value & 0xF;
++          insn |= (value & 0x30) << 5;
++          insn |= (value & 0x40) << 2;
++          bfd_putl16 ((bfd_vma) insn, where);
++          break;
++ 
+ 	case BFD_RELOC_AVR_6:
+ 	  if ((value > 63) || (value < 0))
+ 	    as_bad_where (fixP->fx_file, fixP->fx_line,
+@@ -1513,7 +1524,18 @@ md_assemble (char *str)
+   if (!op[0])
+     as_bad (_("can't find opcode "));
+ 
+-  opcode = (struct avr_opcodes_s *) hash_find (avr_hash, op);
++  /* To handle Tiny (AVR8L) architecture peculiarities */
++  if (avr_mcu->isa & AVR_ISA_TINY)
++  {
++    if (*op == 'l' && *(op+1) == 'd' && *(op+2) == 's' && !*(op+3))
++      opcode = (struct avr_opcodes_s *) hash_find (avr_hash, "lds16");
++    else if (*op == 's' && *(op+1) == 't' && *(op+2) == 's' && !*(op+3))
++      opcode = (struct avr_opcodes_s *) hash_find (avr_hash, "sts16"); 
++    else
++      opcode = (struct avr_opcodes_s *) hash_find (avr_hash, op);
++  }
++  else
++    opcode = (struct avr_opcodes_s *) hash_find (avr_hash, op);
+ 
+   if (opcode == NULL)
+     {
+--- include/elf/avr.h	2012-04-19 14:45:03.000000000 +0530
++++ include/elf/avr.h	2012-04-19 12:04:04.000000000 +0530
+@@ -78,6 +78,7 @@ START_RELOC_NUMBERS (elf_avr_reloc_type)
+      RELOC_NUMBER (R_AVR_LO8_LDI_GS,	       24)
+      RELOC_NUMBER (R_AVR_HI8_LDI_GS,	       25)
+      RELOC_NUMBER (R_AVR_8, 		       26)
++     RELOC_NUMBER (R_AVR_7_LDS16,              27)
+ END_RELOC_NUMBERS (R_AVR_max)
+ 
+ #endif /* _ELF_AVR_H */
+--- include/opcode/avr.h	2012-04-19 14:45:03.000000000 +0530
++++ include/opcode/avr.h	2012-04-19 12:04:04.000000000 +0530
+@@ -22,6 +22,7 @@
+ #define AVR_ISA_LPM   0x0002 /* device has LPM */
+ #define AVR_ISA_LPMX  0x0004 /* device has LPM Rd,Z[+] */
+ #define AVR_ISA_SRAM  0x0008 /* device has SRAM (LD, ST, PUSH, POP, ...) */
++#define AVR_ISA_TINY  0x0010 /* device has AVR8L core specific encodings */
+ #define AVR_ISA_MEGA  0x0020 /* device has >8K program memory (JMP and CALL
+ 				supported, no 8K wrap on RJMP and RCALL) */
+ #define AVR_ISA_MUL   0x0040 /* device has new core (MUL, FMUL, ...) */
+@@ -72,7 +73,7 @@
+                         AVR_ISA_ELPM | AVR_ISA_ELPMX | AVR_ISA_SPM | \
+                         AVR_ISA_BRK | AVR_ISA_EIND | AVR_ISA_MOVW)
+ 
+-#define AVR_ISA_AVRTINY10 (AVR_ISA_1200 | AVR_ISA_BRK | AVR_ISA_SRAM)
++#define AVR_ISA_AVRTINY10 (AVR_ISA_1200 | AVR_ISA_BRK | AVR_ISA_SRAM | AVR_ISA_TINY)
+ 
+ #define REGISTER_P(x) ((x) == 'r'		\
+ 		       || (x) == 'd'		\
+@@ -279,6 +280,8 @@ AVR_INSN (fmulsu,"a,a","000000111ddd1rrr
+ 
+ AVR_INSN (sts,  "i,r", "1001001ddddd0000", 2, AVR_ISA_SRAM, 0x9200)
+ AVR_INSN (lds,  "r,i", "1001000ddddd0000", 2, AVR_ISA_SRAM, 0x9000)
++AVR_INSN (sts16,"j,d", "10101kkkddddkkkk", 1, AVR_ISA_TINY, 0xA800)
++AVR_INSN (lds16,"d,j", "10100kkkddddkkkk", 1, AVR_ISA_TINY, 0xA000)
+ 
+ AVR_INSN (xch,  "z,r", "1001001rrrrr0100", 1, AVR_ISA_XMEGAU, 0x9204)
+ AVR_INSN (las,  "z,r", "1001001rrrrr0101", 1, AVR_ISA_XMEGAU, 0x9205)
+--- opcodes/avr-dis.c	2011-07-01 21:41:27.000000000 +0530
++++ opcodes/avr-dis.c	2012-04-19 12:04:04.000000000 +0530
+@@ -187,7 +187,15 @@ avr_operand (unsigned int insn, unsigned
+     case 'i':
+       sprintf (buf, "0x%04X", insn2);
+       break;
+-      
++    case 'j':
++      {
++        unsigned int val = ((insn & 0xf) | ((insn & 0x600) >> 5)
++                                         | ((insn & 0x100) >> 2));
++        if (val > 0 && !(insn & 0x100))
++          val |= 0x80;
++        sprintf (buf, "0x%02x", val);
++      }
++      break;
+     case 'M':
+       sprintf (buf, "0x%02X", ((insn & 0xf00) >> 4) | (insn & 0xf));
+       sprintf (comment, "%d", ((insn & 0xf00) >> 4) | (insn & 0xf));
+@@ -379,8 +387,19 @@ print_insn_avr (bfd_vma addr, disassembl
+       comment2[0] = 0;
+     }
+ 
+-  (*prin) (stream, "%s", ok ? opcode->name : ".word");
+-
++  if (ok)
++  {
++    /* In order to print 2byte sts/lds properly */ 
++    if (!strncmp(opcode->name, "sts16", 5))
++      (*prin) (stream, "%s", "sts");
++    else if (!strncmp(opcode->name, "lds16", 5))
++      (*prin) (stream, "%s", "lds");
++    else 
++      (*prin) (stream, "%s", opcode->name);
++  }
++  else
++    (*prin) (stream, "%s", ".word");
++    
+   if (*op1)
+       (*prin) (stream, "\t%s", op1);
+ 
