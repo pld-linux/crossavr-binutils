@@ -23,7 +23,7 @@ diff -Naurp binutils/size.c binutils/size.c
 diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
 --- gas/config/tc-avr.c	2011-12-16 15:50:12.000000000 +0530
 +++ gas/config/tc-avr.c	2011-12-16 15:51:32.000000000 +0530
-@@ -147,6 +147,7 @@ static struct mcu_type_s mcu_types[] =
+@@ -146,6 +146,7 @@ static struct mcu_type_s mcu_types[] =
    {"atmega32u2", AVR_ISA_AVR35,   bfd_mach_avr35},
    {"attiny1634", AVR_ISA_AVR35,   bfd_mach_avr35},
    {"atmega8",    AVR_ISA_M8,      bfd_mach_avr4},
@@ -31,7 +31,7 @@ diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
    {"atmega48",   AVR_ISA_AVR4,    bfd_mach_avr4},
    {"atmega48a",  AVR_ISA_AVR4,    bfd_mach_avr4},
    {"atmega48pa", AVR_ISA_AVR4,    bfd_mach_avr4},
-@@ -257,8 +258,10 @@ static struct mcu_type_s mcu_types[] =
+@@ -256,8 +257,10 @@ static struct mcu_type_s mcu_types[] =
    {"at94k",      AVR_ISA_94K,     bfd_mach_avr5},
    {"m3000",      AVR_ISA_AVR5,    bfd_mach_avr5},
    {"atmega128",  AVR_ISA_AVR51,   bfd_mach_avr51},

@@ -1,0 +1,24 @@
+diff -Naurp ld/scripttempl/avr.sc ld/scripttempl/avr.sc
+--- ld/scripttempl/avr.sc	2011-03-22 01:37:42.000000000 +0530
++++ ld/scripttempl/avr.sc	2012-07-24 12:13:29.000000000 +0530
+@@ -161,7 +161,10 @@ SECTIONS
+   .data	${RELOCATING-0} : ${RELOCATING+AT (ADDR (.text) + SIZEOF (.text))}
+   {
+     ${RELOCATING+ PROVIDE (__data_start = .) ; }
+-    *(.data)
++    /* --gc-sections will delete empty .data. This leads to wrong start
++       addresses for subsequent sections because -Tdata= from the command
++       line will have no effect, see PR13697.  Thus, keep .data  */
++    KEEP (*(.data))
+     *(.data*)
+     *(.rodata)  /* We need to include .rodata here if gcc is used */
+     *(.rodata*) /* with -fdata-sections.  */
+@@ -195,7 +198,7 @@ SECTIONS
+ 
+   .eeprom ${RELOCATING-0}:
+   {
+-    *(.eeprom*)
++    KEEP(*(.eeprom*))
+     ${RELOCATING+ __eeprom_end = . ; }
+   } ${RELOCATING+ > eeprom}
+ 

@@ -28,7 +28,7 @@ diff -Naurp binutils/size.c binutils/size.c
 diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
 --- gas/config/tc-avr.c	2011-12-22 12:39:06.000000000 +0530
 +++ gas/config/tc-avr.c	2011-12-22 12:39:15.000000000 +0530
-@@ -273,6 +273,7 @@ static struct mcu_type_s mcu_types[] =
+@@ -272,6 +272,7 @@ static struct mcu_type_s mcu_types[] =
    {"atmega2561", AVR_ISA_AVR6,    bfd_mach_avr6},
    {"atmega256rfa2", AVR_ISA_AVR6, bfd_mach_avr6},
    {"atmega256rfr2", AVR_ISA_AVR6, bfd_mach_avr6},

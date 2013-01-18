@@ -36,7 +36,7 @@ diff -Naurp binutils/size.c binutils/size.c
 diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
 --- gas/config/tc-avr.c	2011-12-16 15:36:12.000000000 +0530
 +++ gas/config/tc-avr.c	2011-12-16 15:38:01.000000000 +0530
-@@ -172,6 +172,7 @@ static struct mcu_type_s mcu_types[] =
+@@ -171,6 +171,7 @@ static struct mcu_type_s mcu_types[] =
    {"atmega163",  AVR_ISA_M161,    bfd_mach_avr5},
    {"atmega164a", AVR_ISA_AVR5,    bfd_mach_avr5},
    {"atmega164p", AVR_ISA_AVR5,    bfd_mach_avr5},
@@ -44,7 +44,7 @@ diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
    {"atmega165",  AVR_ISA_AVR5,    bfd_mach_avr5},
    {"atmega165a", AVR_ISA_AVR5,    bfd_mach_avr5},
    {"atmega165p", AVR_ISA_AVR5,    bfd_mach_avr5},
-@@ -179,11 +180,13 @@ static struct mcu_type_s mcu_types[] =
+@@ -178,11 +179,13 @@ static struct mcu_type_s mcu_types[] =
    {"atmega168",  AVR_ISA_AVR5,    bfd_mach_avr5},
    {"atmega168a", AVR_ISA_AVR5,    bfd_mach_avr5},
    {"atmega168p", AVR_ISA_AVR5,    bfd_mach_avr5},
@@ -58,7 +58,7 @@ diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
    {"atmega323",  AVR_ISA_AVR5,    bfd_mach_avr5},
    {"atmega324a", AVR_ISA_AVR5,    bfd_mach_avr5},
    {"atmega324p", AVR_ISA_AVR5,    bfd_mach_avr5},
-@@ -210,6 +213,7 @@ static struct mcu_type_s mcu_types[] =
+@@ -209,6 +212,7 @@ static struct mcu_type_s mcu_types[] =
    {"atmega64rfa2", AVR_ISA_AVR5,  bfd_mach_avr5},
    {"atmega64rfr2", AVR_ISA_AVR5,  bfd_mach_avr5},
    {"atmega64",   AVR_ISA_AVR5,    bfd_mach_avr5},

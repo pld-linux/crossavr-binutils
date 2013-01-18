@@ -1,0 +1,463 @@
+diff -Naurp bfd/archures.c bfd/archures.c
+--- bfd/archures.c	2012-07-03 11:35:37.000000000 +0530
++++ bfd/archures.c	2012-07-03 11:38:04.000000000 +0530
+@@ -381,6 +381,7 @@ DESCRIPTION
+ .#define bfd_mach_avr5		5
+ .#define bfd_mach_avr51		51
+ .#define bfd_mach_avr6		6
++.#define bfd_mach_avr7		7
+ .#define bfd_mach_avrxmega1 101
+ .#define bfd_mach_avrxmega2 102
+ .#define bfd_mach_avrxmega3 103
+diff -Naurp bfd/cpu-avr.c bfd/cpu-avr.c
+--- bfd/cpu-avr.c	2012-07-03 11:35:37.000000000 +0530
++++ bfd/cpu-avr.c	2012-07-03 11:38:04.000000000 +0530
+@@ -134,27 +134,30 @@ static const bfd_arch_info_type arch_inf
+ 
+   /* 3-Byte PC.  */
+   N (22, bfd_mach_avr6, "avr:6", FALSE, & arch_info_struct[10]),
++
++  /* 20K flash. starts at 0x8000 */
++  N (16, bfd_mach_avr7, "avr:7", FALSE, & arch_info_struct[11]),
+   
+   /* Xmega 1 */
+-  N (24, bfd_mach_avrxmega1, "avr:101", FALSE, & arch_info_struct[11]),
++  N (24, bfd_mach_avrxmega1, "avr:101", FALSE, & arch_info_struct[12]),
+ 
+   /* Xmega 2 */
+-  N (24, bfd_mach_avrxmega2, "avr:102", FALSE, & arch_info_struct[12]),
++  N (24, bfd_mach_avrxmega2, "avr:102", FALSE, & arch_info_struct[13]),
+   
+   /* Xmega 3 */
+-  N (24, bfd_mach_avrxmega3, "avr:103", FALSE, & arch_info_struct[13]),
++  N (24, bfd_mach_avrxmega3, "avr:103", FALSE, & arch_info_struct[14]),
+   
+   /* Xmega 4 */
+-  N (24, bfd_mach_avrxmega4, "avr:104", FALSE, & arch_info_struct[14]),
++  N (24, bfd_mach_avrxmega4, "avr:104", FALSE, & arch_info_struct[15]),
+   
+   /* Xmega 5 */
+-  N (24, bfd_mach_avrxmega5, "avr:105", FALSE, & arch_info_struct[15]),
++  N (24, bfd_mach_avrxmega5, "avr:105", FALSE, & arch_info_struct[16]),
+   
+   /* Xmega 6 */
+-  N (24, bfd_mach_avrxmega6, "avr:106", FALSE, & arch_info_struct[16]),
++  N (24, bfd_mach_avrxmega6, "avr:106", FALSE, & arch_info_struct[17]),
+   
+   /* Xmega 7 */
+-  N (24, bfd_mach_avrxmega7, "avr:107", FALSE, & arch_info_struct[17]),
++  N (24, bfd_mach_avrxmega7, "avr:107", FALSE, & arch_info_struct[18]),
+   
+   /* attiny 10 */
+   N (16, bfd_mach_avrtiny10, "avr:201", FALSE, NULL)
+diff -Naurp bfd/elf32-avr.c bfd/elf32-avr.c
+--- bfd/elf32-avr.c	2012-07-03 11:35:37.000000000 +0530
++++ bfd/elf32-avr.c	2012-07-03 11:38:04.000000000 +0530
+@@ -1299,6 +1299,10 @@ bfd_elf_avr_final_write_processing (bfd 
+       val = E_AVR_MACH_AVR6;
+       break;
+ 
++    case bfd_mach_avr7:
++      val = E_AVR_MACH_AVR7;
++      break;
++
+     case bfd_mach_avrxmega1:
+       val = E_AVR_MACH_XMEGA1;
+       break;
+@@ -1393,6 +1397,10 @@ elf32_avr_object_p (bfd *abfd)
+ 	  e_set = bfd_mach_avr6;
+ 	  break;
+ 
++	case E_AVR_MACH_AVR7:
++	  e_set = bfd_mach_avr7;
++	  break;
++
+ 	case E_AVR_MACH_XMEGA1:
+ 	  e_set = bfd_mach_avrxmega1;
+ 	  break;
+diff -Naurp binutils/size.c binutils/size.c
+--- binutils/size.c	2012-07-03 11:36:50.000000000 +0530
++++ binutils/size.c	2012-07-03 11:38:04.000000000 +0530
+@@ -283,6 +283,8 @@ avr_device_t avr[] =
+ 	{"atxmega16c4",   AVR20K,  AVR2K,  AVR1K},
+ 	{"atxmega16d4",   AVR20K,  AVR2K,  AVR1K},
+ 
++	{"ata5831",       AVR20K,  AVR1K,  AVR1K},
++
+ 	{"at76c711",      AVR16K,  AVR2K,  0UL},
+ 	{"at90pwm161",    AVR16K,  AVR1K,  AVR512},
+ 	{"at90pwm216",    AVR16K,  AVR1K,  AVR512},
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2012-07-03 11:36:50.000000000 +0530
++++ gas/config/tc-avr.c	2012-07-03 11:38:04.000000000 +0530
+@@ -83,6 +83,7 @@ static struct mcu_type_s mcu_types[] =
+   {"avr5",       AVR_ISA_AVR51,   bfd_mach_avr5},
+   {"avr51",      AVR_ISA_AVR51,   bfd_mach_avr51},
+   {"avr6",       AVR_ISA_AVR6,    bfd_mach_avr6},
++  {"avr7",       AVR_ISA_AVR7,    bfd_mach_avr7},
+   {"avrxmega1",  AVR_ISA_XMEGA,   bfd_mach_avrxmega1},
+   {"avrxmega2",  AVR_ISA_XMEGA,   bfd_mach_avrxmega2},
+   {"avrxmega3",  AVR_ISA_XMEGA,   bfd_mach_avrxmega3},
+@@ -282,6 +283,7 @@ static struct mcu_type_s mcu_types[] =
+   {"atmega2561", AVR_ISA_AVR6,    bfd_mach_avr6},
+   {"atmega256rfa2", AVR_ISA_AVR6, bfd_mach_avr6},
+   {"atmega256rfr2", AVR_ISA_AVR6, bfd_mach_avr6},
++  {"ata5831",    AVR_ISA_AVR7, bfd_mach_avr7},
+   {"atmxt112sl",  AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
+   {"atmxt224",    AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
+   {"atmxt224e",   AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
+@@ -514,6 +516,8 @@ md_show_usage (FILE *stream)
+ 	"                   avr5  - enhanced AVR core with up to 64K program memory\n"
+ 	"                   avr51 - enhanced AVR core with up to 128K program memory\n"
+ 	"                   avr6  - enhanced AVR core with up to 256K program memory\n"
++	"                   avr7  - enhanced AVR core with up to 20K program memory\n"
++	"                           flash starting address is not zero\n"
+ 	"                   avrxmega2 - XMEGA, > 8K, < 64K FLASH, < 64K RAM\n"
+ 	"                   avrxmega3 - XMEGA, > 8K, <= 64K FLASH, > 64K RAM\n"
+ 	"                   avrxmega4 - XMEGA, > 64K, <= 128K FLASH, <= 64K RAM\n"
+diff -Naurp gas/doc/c-avr.texi gas/doc/c-avr.texi
+--- gas/doc/c-avr.texi	2012-07-03 11:36:50.000000000 +0530
++++ gas/doc/c-avr.texi	2012-07-03 11:38:04.000000000 +0530
+@@ -87,6 +87,9 @@ atmega128rfa1, atmega128rfa2, atmega128r
+ Instruction set avr6 is for the enhanced AVR core with a 3-byte PC (MCU types:
+ atmega2560, atmega2561, atmega256rfa2, atmega256rfr2).
+ 
++Instruction set avr7 is for the enhanced AVR core with 20K flash which starts
++from 0x8000 (MCU types: ata5831)
++
+ Instruction set avrxmega2 is for the XMEGA AVR core with 8K to 64K program
+ memory space and less than 64K data space (MCU types: atxmega16a4, atxmega16a4u, atxmega16c4,
+ atxmega16d4, atxmega16x1, atxmega32a4, atxmega32a4u, ,atxmega32c4, atxmega32d4,
+diff -Naurp include/elf/avr.h include/elf/avr.h
+--- include/elf/avr.h	2012-07-03 11:35:37.000000000 +0530
++++ include/elf/avr.h	2012-07-03 11:38:04.000000000 +0530
+@@ -40,6 +40,7 @@
+ #define E_AVR_MACH_AVR5 5
+ #define E_AVR_MACH_AVR51 51
+ #define E_AVR_MACH_AVR6 6 
++#define E_AVR_MACH_AVR7 7 
+ #define E_AVR_MACH_XMEGA1 101
+ #define E_AVR_MACH_XMEGA2 102
+ #define E_AVR_MACH_XMEGA3 103
+diff -Naurp include/opcode/avr.h include/opcode/avr.h
+--- include/opcode/avr.h	2012-07-03 11:35:37.000000000 +0530
++++ include/opcode/avr.h	2012-07-03 11:38:04.000000000 +0530
+@@ -72,6 +72,8 @@
+                         AVR_ISA_ELPM | AVR_ISA_ELPMX | AVR_ISA_SPM | \
+                         AVR_ISA_BRK | AVR_ISA_EIND | AVR_ISA_MOVW)
+ 
++#define AVR_ISA_AVR7   (AVR_ISA_M8 | AVR_ISA_MEGA | AVR_ISA_BRK )
++
+ #define AVR_ISA_AVRTINY10 (AVR_ISA_1200 | AVR_ISA_BRK | AVR_ISA_SRAM)
+ 
+ #define REGISTER_P(x) ((x) == 'r'		\
+diff -Naurp ld/configure.tgt ld/configure.tgt
+--- ld/configure.tgt	2012-07-03 11:35:37.000000000 +0530
++++ ld/configure.tgt	2012-07-03 11:38:04.000000000 +0530
+@@ -98,7 +98,7 @@ arm*-*-uclinux*)	targ_emul=armelf_linux
+ arm-*-vxworks)		targ_emul=armelf_vxworks ;;
+ arm*-*-conix*)		targ_emul=armelf ;;
+ avr-*-*)		targ_emul=avr2
+-			targ_extra_emuls="avr1 avr25 avr3 avr31 avr35 avr4 avr5 avr51 avr6 avrxmega1 avrxmega2 avrxmega3 avrxmega4 avrxmega5 avrxmega6 avrxmega7 avrtiny10"
++			targ_extra_emuls="avr1 avr25 avr3 avr31 avr35 avr4 avr5 avr51 avr6 avr7 avrxmega1 avrxmega2 avrxmega3 avrxmega4 avrxmega5 avrxmega6 avrxmega7 avrtiny10"
+ 			;;
+ bfin-*-elf)		targ_emul=elf32bfin;
+ 			targ_extra_emuls="elf32bfinfd"
+diff -Naurp ld/emulparams/avr7.sh ld/emulparams/avr7.sh
+--- ld/emulparams/avr7.sh	1970-01-01 05:30:00.000000000 +0530
++++ ld/emulparams/avr7.sh	2012-07-03 11:38:04.000000000 +0530
+@@ -0,0 +1,13 @@
++ARCH=avr:7
++MACHINE=
++SCRIPT_NAME=avr7
++OUTPUT_FORMAT="elf32-avr"
++MAXPAGESIZE=1
++EMBEDDED=yes
++TEMPLATE_NAME=elf32
++
++TEXT_ORIGIN=0x8000
++TEXT_LENGTH=20K
++DATA_ORIGIN=0x800200
++DATA_LENGTH=0x400
++EXTRA_EM_FILE=avrelf
+diff -Naurp ld/Makefile.am ld/Makefile.am
+--- ld/Makefile.am	2012-07-03 11:35:37.000000000 +0530
++++ ld/Makefile.am	2012-07-03 11:38:04.000000000 +0530
+@@ -163,6 +163,7 @@ ALL_EMULATION_SOURCES = \
+ 	eavr5.c \
+ 	eavr51.c \
+ 	eavr6.c \
++	eavr7.c \
+ 	eavrxmega1.c \
+ 	eavrxmega2.c \
+ 	eavrxmega3.c \
+@@ -791,6 +792,10 @@ eavr6.c: $(srcdir)/emulparams/avr6.sh $(
+   $(ELF_DEPS) $(srcdir)/scripttempl/avr.sc \
+   ${GEN_DEPENDS}
+ 	${GENSCRIPTS} avr6 "$(tdir_avr2)"
++eavr7.c: $(srcdir)/emulparams/avr7.sh $(srcdir)/emultempl/avrelf.em \
++  $(ELF_DEPS) $(srcdir)/scripttempl/avr7.sc \
++  ${GEN_DEPENDS}
++	${GENSCRIPTS} avr7 "$(tdir_avr2)"
+ eavrxmega1.c: $(srcdir)/emulparams/avrxmega1.sh \
+   $(srcdir)/emultempl/avrelf.em $(ELF_DEPS) $(srcdir)/scripttempl/avr.sc \
+   ${GEN_DEPENDS}
+diff -Naurp ld/scripttempl/avr7.sc ld/scripttempl/avr7.sc
+--- ld/scripttempl/avr7.sc	1970-01-01 05:30:00.000000000 +0530
++++ ld/scripttempl/avr7.sc	2012-07-03 11:38:04.000000000 +0530
+@@ -0,0 +1,255 @@
++cat <<EOF
++OUTPUT_FORMAT("${OUTPUT_FORMAT}","${OUTPUT_FORMAT}","${OUTPUT_FORMAT}")
++OUTPUT_ARCH(${ARCH})
++
++MEMORY
++{
++  text   (rx)   : ORIGIN = $TEXT_ORIGIN, LENGTH = $TEXT_LENGTH
++  data   (rw!x) : ORIGIN = $DATA_ORIGIN, LENGTH = $DATA_LENGTH
++  eeprom (rw!x) : ORIGIN = 0x810000, LENGTH = 1K
++  fuse      (rw!x) : ORIGIN = 0x820000, LENGTH = 1K
++  lock      (rw!x) : ORIGIN = 0x830000, LENGTH = 1K
++  signature (rw!x) : ORIGIN = 0x840000, LENGTH = 1K
++}
++
++SECTIONS
++{
++  /* Read-only sections, merged into text segment: */
++  ${TEXT_DYNAMIC+${DYNAMIC}}
++  .hash        ${RELOCATING-0} : { *(.hash)		}
++  .dynsym      ${RELOCATING-0} : { *(.dynsym)		}
++  .dynstr      ${RELOCATING-0} : { *(.dynstr)		}
++  .gnu.version ${RELOCATING-0} : { *(.gnu.version)	}
++  .gnu.version_d ${RELOCATING-0} : { *(.gnu.version_d)	}
++  .gnu.version_r ${RELOCATING-0} : { *(.gnu.version_r)	}
++
++  .rel.init    ${RELOCATING-0} : { *(.rel.init)		}
++  .rela.init   ${RELOCATING-0} : { *(.rela.init)	}
++  .rel.text    ${RELOCATING-0} :
++    {
++      *(.rel.text)
++      ${RELOCATING+*(.rel.text.*)}
++      ${RELOCATING+*(.rel.gnu.linkonce.t*)}
++    }
++  .rela.text   ${RELOCATING-0} :
++    {
++      *(.rela.text)
++      ${RELOCATING+*(.rela.text.*)}
++      ${RELOCATING+*(.rela.gnu.linkonce.t*)}
++    }
++  .rel.fini    ${RELOCATING-0} : { *(.rel.fini)		}
++  .rela.fini   ${RELOCATING-0} : { *(.rela.fini)	}
++  .rel.rodata  ${RELOCATING-0} :
++    {
++      *(.rel.rodata)
++      ${RELOCATING+*(.rel.rodata.*)}
++      ${RELOCATING+*(.rel.gnu.linkonce.r*)}
++    }
++  .rela.rodata ${RELOCATING-0} :
++    {
++      *(.rela.rodata)
++      ${RELOCATING+*(.rela.rodata.*)}
++      ${RELOCATING+*(.rela.gnu.linkonce.r*)}
++    }
++  .rel.data    ${RELOCATING-0} :
++    {
++      *(.rel.data)
++      ${RELOCATING+*(.rel.data.*)}
++      ${RELOCATING+*(.rel.gnu.linkonce.d*)}
++    }
++  .rela.data   ${RELOCATING-0} :
++    {
++      *(.rela.data)
++      ${RELOCATING+*(.rela.data.*)}
++      ${RELOCATING+*(.rela.gnu.linkonce.d*)}
++    }
++  .rel.ctors   ${RELOCATING-0} : { *(.rel.ctors)	}
++  .rela.ctors  ${RELOCATING-0} : { *(.rela.ctors)	}
++  .rel.dtors   ${RELOCATING-0} : { *(.rel.dtors)	}
++  .rela.dtors  ${RELOCATING-0} : { *(.rela.dtors)	}
++  .rel.got     ${RELOCATING-0} : { *(.rel.got)		}
++  .rela.got    ${RELOCATING-0} : { *(.rela.got)		}
++  .rel.bss     ${RELOCATING-0} : { *(.rel.bss)		}
++  .rela.bss    ${RELOCATING-0} : { *(.rela.bss)		}
++  .rel.plt     ${RELOCATING-0} : { *(.rel.plt)		}
++  .rela.plt    ${RELOCATING-0} : { *(.rela.plt)		}
++
++  /* Internal text space or external memory.  */
++  .text ${RELOCATING-0} :
++  {
++    *(.vectors)
++    KEEP(*(.vectors))
++
++    /* For data that needs to reside in the lower 64k of progmem.  */
++    *(.progmem.gcc*)
++    *(.progmem*)
++    ${RELOCATING+. = ALIGN(2);}
++
++    ${CONSTRUCTING+ __trampolines_start = . ; }
++    /* The jump trampolines for the 16-bit limited relocs will reside here.  */
++    *(.trampolines)
++    *(.trampolines*)
++    ${CONSTRUCTING+ __trampolines_end = . ; }
++
++    /* For future tablejump instruction arrays for 3 byte pc devices.
++       We don't relax jump/call instructions within these sections.  */
++    *(.jumptables) 
++    *(.jumptables*) 
++
++    /* For code that needs to reside in the lower 128k progmem.  */
++    *(.lowtext)
++    *(.lowtext*)
++
++    ${CONSTRUCTING+ __ctors_start = . ; }
++    ${CONSTRUCTING+ *(.ctors) }
++    ${CONSTRUCTING+ __ctors_end = . ; }
++    ${CONSTRUCTING+ __dtors_start = . ; }
++    ${CONSTRUCTING+ *(.dtors) }
++    ${CONSTRUCTING+ __dtors_end = . ; }
++    KEEP(SORT(*)(.ctors))
++    KEEP(SORT(*)(.dtors))
++
++    /* From this point on, we don't bother about wether the insns are
++       below or above the 16 bits boundary.  */
++    *(.init0)  /* Start here after reset.  */
++    KEEP (*(.init0))
++    *(.init1)
++    KEEP (*(.init1))
++    *(.init2)  /* Clear __zero_reg__, set up stack pointer.  */
++    KEEP (*(.init2))
++    *(.init3)
++    KEEP (*(.init3))
++    *(.init4)  /* Initialize data and BSS.  */
++    KEEP (*(.init4))
++    *(.init5)
++    KEEP (*(.init5))
++    *(.init6)  /* C++ constructors.  */
++    KEEP (*(.init6))
++    *(.init7)
++    KEEP (*(.init7))
++    *(.init8)
++    KEEP (*(.init8))
++    *(.init9)  /* Call main().  */
++    KEEP (*(.init9))
++    *(.text)
++    ${RELOCATING+. = ALIGN(2);}
++    *(.text.*)
++    ${RELOCATING+. = ALIGN(2);}
++    *(.fini9)  /* _exit() starts here.  */
++    KEEP (*(.fini9))
++    *(.fini8)
++    KEEP (*(.fini8))
++    *(.fini7)
++    KEEP (*(.fini7))
++    *(.fini6)  /* C++ destructors.  */
++    KEEP (*(.fini6))
++    *(.fini5)
++    KEEP (*(.fini5))
++    *(.fini4)
++    KEEP (*(.fini4))
++    *(.fini3)
++    KEEP (*(.fini3))
++    *(.fini2)
++    KEEP (*(.fini2))
++    *(.fini1)
++    KEEP (*(.fini1))
++    *(.fini0)  /* Infinite loop after program termination.  */
++    KEEP (*(.fini0))
++    ${RELOCATING+ _etext = . ; }
++  } ${RELOCATING+ > text}
++
++  .data	${RELOCATING-0} : ${RELOCATING+AT (ADDR (.text) + SIZEOF (.text))}
++  {
++    ${RELOCATING+ PROVIDE (__data_start = .) ; }
++    *(.data)
++    *(.data*)
++    *(.rodata)  /* We need to include .rodata here if gcc is used */
++    *(.rodata*) /* with -fdata-sections.  */
++    *(.gnu.linkonce.d*)
++    ${RELOCATING+. = ALIGN(2);}
++    ${RELOCATING+ _edata = . ; }
++    ${RELOCATING+ PROVIDE (__data_end = .) ; }
++  } ${RELOCATING+ > data}
++
++  .bss ${RELOCATING-0} :${RELOCATING+ AT (ADDR (.bss))}
++  {
++    ${RELOCATING+ PROVIDE (__bss_start = .) ; }
++    *(.bss)
++    *(.bss*)
++    *(COMMON)
++    ${RELOCATING+ PROVIDE (__bss_end = .) ; }
++  } ${RELOCATING+ > data}
++
++  ${RELOCATING+ __data_load_start = LOADADDR(.data); }
++  ${RELOCATING+ __data_load_end = __data_load_start + SIZEOF(.data); }
++
++  /* Global data not cleared after reset.  */
++  .noinit ${RELOCATING-0}:
++  {
++    ${RELOCATING+ PROVIDE (__noinit_start = .) ; }
++    *(.noinit*)
++    ${RELOCATING+ PROVIDE (__noinit_end = .) ; }
++    ${RELOCATING+ _end = . ;  }
++    ${RELOCATING+ PROVIDE (__heap_start = .) ; }
++  } ${RELOCATING+ > data}
++
++  .eeprom ${RELOCATING-0}:
++  {
++    *(.eeprom*)
++    ${RELOCATING+ __eeprom_end = . ; }
++  } ${RELOCATING+ > eeprom}
++
++  .fuse ${RELOCATING-0}:
++  {
++    KEEP(*(.fuse))
++    KEEP(*(.lfuse))
++    KEEP(*(.hfuse))
++    KEEP(*(.efuse))
++  } ${RELOCATING+ > fuse}
++
++  .lock ${RELOCATING-0}:
++  {
++    KEEP(*(.lock*))
++  } ${RELOCATING+ > lock}
++
++  .signature ${RELOCATING-0}:
++  {
++    KEEP(*(.signature*))
++  } ${RELOCATING+ > signature}
++
++  /* Stabs debugging sections.  */
++  .stab 0 : { *(.stab) }
++  .stabstr 0 : { *(.stabstr) }
++  .stab.excl 0 : { *(.stab.excl) }
++  .stab.exclstr 0 : { *(.stab.exclstr) }
++  .stab.index 0 : { *(.stab.index) }
++  .stab.indexstr 0 : { *(.stab.indexstr) }
++  .comment 0 : { *(.comment) }
++ 
++  /* DWARF debug sections.
++     Symbols in the DWARF debugging sections are relative to the beginning
++     of the section so we begin them at 0.  */
++
++  /* DWARF 1 */
++  .debug          0 : { *(.debug) }
++  .line           0 : { *(.line) }
++
++  /* GNU DWARF 1 extensions */
++  .debug_srcinfo  0 : { *(.debug_srcinfo) }
++  .debug_sfnames  0 : { *(.debug_sfnames) }
++
++  /* DWARF 1.1 and DWARF 2 */
++  .debug_aranges  0 : { *(.debug_aranges) }
++  .debug_pubnames 0 : { *(.debug_pubnames) }
++
++  /* DWARF 2 */
++  .debug_info     0 : { *(.debug_info) *(.gnu.linkonce.wi.*) }
++  .debug_abbrev   0 : { *(.debug_abbrev) }
++  .debug_line     0 : { *(.debug_line) }
++  .debug_frame    0 : { *(.debug_frame) }
++  .debug_str      0 : { *(.debug_str) }
++  .debug_loc      0 : { *(.debug_loc) }
++  .debug_macinfo  0 : { *(.debug_macinfo) }
++}
++EOF
++

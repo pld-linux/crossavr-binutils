@@ -6,9 +6,9 @@ Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - AV
 Summary(tr.UTF-8):	GNU geliştirme araçları - AVR binutils
 Name:		crossavr-binutils
 Version:	2.22
-Release:	1
+Release:	2
 Epoch:		1
-# Patches 1xx are taken form Atmel official AVR8-GNU toolchain version 3.4.0.633
+# Patches 1xx are taken form Atmel official AVR8-GNU toolchain version 3.4.1.830
 Patch100:	300-binutils-avr-size.patch
 Patch101:	301-binutils-avr-coff.patch
 Patch102:	302-binutils-as-dwarf.patch
@@ -28,32 +28,37 @@ Patch115:	407-binutils-atxmega64_128_192_256a3u.patch
 Patch116:	408-binutils-atmegarfr2_a2.patch
 Patch117:	409-binutils-atmega165pa.patch
 Patch118:	410-binutils-atxmega384c3.patch
-Patch119:	411-binutils-attiny80.patch
-Patch120:	412-binutils-atxmega128a4u.patch
-Patch121:	413-binutils-atxmega64d4.patch
-Patch122:	414-binutils-atmega164pa_168pa_32a_64a.patch
-Patch123:	415-binutils-atxmega64_128_b3.patch
-Patch124:	416-binutils-atxmega64b1.patch
-Patch125:	417-binutils-atmega_8a_128a_1284.patch
-Patch126:	418-binutils-atxmega64a4u.patch
-Patch127:	419-binutils-atxmega128d4.patch
-Patch128:	420-binutils-atmxt336s.patch
-Patch129:	421-binutils-atxmega16c4_32c4_128c3_256c3.patch
-Patch130:	422-binutils-atxmega384d3.patch
-Patch131:	423-binutils-atmega48hvf.patch
-Patch132:	424-binutils-atmega26hvg.patch
-Patch133:	425-binutils-atmxt224_224e.patch
-Patch134:	426-binutils-atxmega192c3.patch
-Patch135:	427-binutils-atmxt112sl.patch
-Patch136:	428-binutils-atxmega64c3.patch
-Patch137:	429-binutils-ata6285_6286.patch
-Patch138:	430-binutils-attiny828.patch
-Patch139:	431-binutils-ata5790_5790N_5795.patch
-Patch140:	432-binutils-ata5272_5505.patch
-Patch141:	500-binutils-bug13789.patch
-Patch142:	501-binutils-modify-usb-xmega-isa.patch
-Patch143:	502-binutils-add-config-section-tiny.patch
-Patch144:	503-binutils-avrtc193-tiny.patch
+Patch119:	412-binutils-atxmega128a4u.patch
+Patch120:	413-binutils-atxmega64d4.patch
+Patch121:	414-binutils-atmega164pa_168pa_32a_64a.patch
+Patch122:	415-binutils-atxmega64_128_b3.patch
+Patch123:	416-binutils-atxmega64b1.patch
+Patch124:	417-binutils-atmega_8a_128a_1284.patch
+Patch125:	418-binutils-atxmega64a4u.patch
+Patch126:	419-binutils-atxmega128d4.patch
+Patch127:	420-binutils-atmxt336s.patch
+Patch128:	421-binutils-atxmega16c4_32c4_128c3_256c3.patch
+Patch129:	422-binutils-atxmega384d3.patch
+Patch130:	423-binutils-atmega48hvf.patch
+Patch131:	424-binutils-atmega26hvg.patch
+Patch132:	425-binutils-atmxt224_224e.patch
+Patch133:	426-binutils-atxmega192c3.patch
+Patch134:	427-binutils-atmxt112sl.patch
+Patch135:	428-binutils-atxmega64c3.patch
+Patch136:	429-binutils-ata6285_6286.patch
+Patch137:	430-binutils-attiny828.patch
+Patch138:	431-binutils-ata5790_5790N_5795.patch
+Patch139:	432-binutils-ata5272_5505.patch
+Patch140:	433-binutils-atmxt540s.patch
+Patch141:	434-binutils-ata5831.patch
+Patch142:	435-binutils-attiny841.patch
+Patch143:	436-binutils-atxmega32_16_8e5.patch
+Patch144:	500-binutils-bug13789.patch
+Patch145:	501-binutils-modify-usb-xmega-isa.patch
+Patch146:	502-binutils-add-config-section-tiny.patch
+Patch147:	503-binutils-avrtc193-tiny.patch
+Patch148:	504-binutils-avrtc530-backported.patch
+Patch149:	505-binutils-avrtc446.patch
 License:	GPL
 Group:		Development/Tools
 Source0:	ftp://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
@@ -146,9 +151,25 @@ Ten pakiet zawiera wersję skrośną generującą kod dla Atmel AVR.
 %patch142 -p0
 %patch143 -p0
 %patch144 -p0
+%patch145 -p0
+%patch146 -p0
+%patch147 -p0
+%patch148 -p0
+%patch149 -p0
+
+# Remove hacks for specific autoconf version.
+echo > config/override.m4
 
 %build
-cp /usr/share/automake/config.sub .
+%{__aclocal}
+%{__autoconf}
+for subdir in bfd binutils ld; do
+	cd $subdir
+	%{__aclocal} -I.. -I../bfd -I../config
+	%{__automake}
+	%{__autoconf}
+	cd -
+done
 
 # ldscripts won't be generated properly if SHELL is not bash...
 CFLAGS="%{rpmcflags}" \

@@ -1,0 +1,50 @@
+diff -Naurp binutils/size.c binutils/size.c
+--- binutils/size.c	2012-06-28 16:09:08.000000000 +0530
++++ binutils/size.c	2012-06-28 16:13:56.000000000 +0530
+@@ -97,6 +97,7 @@ static int return_code = 0;
+ #define AVR4K 4096UL
+ #define AVR8K 8192UL
+ #define AVR9K 9216UL
++#define AVR10K 10240UL
+ #define AVR14K 14336UL
+ #define AVR16K 16384UL
+ #define AVR20K 20480UL
+@@ -152,6 +153,9 @@ avr_device_t avr[] =
+ 	{"atmega128rfa2", AVR128K, AVR16K, AVR4K},
+ 	{"atmega128rfr2", AVR128K, AVR16K, AVR4K},
+ 
++	{"atmxt540s",     AVR136K, AVR10K, 0UL},
++	{"atmxt540sreva",AVR136K, AVR10K, 0UL},
++
+ 	{"atxmega128a1",  AVR136K, AVR8K,  AVR2K},
+ 	{"atxmega128a1u", AVR136K, AVR8K,  AVR2K},
+ 	{"atxmega128a4u", AVR136K, AVR8K,  AVR2K},
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2012-06-28 16:09:08.000000000 +0530
++++ gas/config/tc-avr.c	2012-06-28 16:15:11.000000000 +0530
+@@ -313,6 +313,8 @@ static struct mcu_type_s mcu_types[] =
+   {"atxmega128c3", AVR_ISA_XMEGAU, bfd_mach_avrxmega6},
+   {"atxmega128d3", AVR_ISA_XMEGA, bfd_mach_avrxmega6},
+   {"atxmega128d4", AVR_ISA_XMEGA, bfd_mach_avrxmega6},
++  {"atmxt540s",    AVR_ISA_XMEGA, bfd_mach_avrxmega6},
++  {"atmxt540sreva", AVR_ISA_XMEGA, bfd_mach_avrxmega6},
+   {"atxmega192a3", AVR_ISA_XMEGA, bfd_mach_avrxmega6},
+   {"atxmega192a3u",AVR_ISA_XMEGAU, bfd_mach_avrxmega6},
+   {"atxmega192c3", AVR_ISA_XMEGAU, bfd_mach_avrxmega6},
+diff -Naurp gas/doc/c-avr.texi gas/doc/c-avr.texi
+--- gas/doc/c-avr.texi	2012-06-28 16:09:08.000000000 +0530
++++ gas/doc/c-avr.texi	2012-06-28 16:16:53.000000000 +0530
+@@ -105,9 +105,10 @@ atxmega64a1u).
+ 
+ Instruction set avrxmega6 is for the XMEGA AVR core with up to 256K program
+ memory space and less than 64K data space (MCU types: atxmega128a3, atxmega128a3u,
+-atxmega128c3, atxmega128d3, atxmega128d4, atxmega192a3, atxmega192a3u, atxmega128b1,
+-atxmega128b3, atxmega192c3, atxmega192d3, atxmega256a3, atxmega256a3u, atxmega256a3b, atxmega256a3bu,
+-atxmega256c3, atxmega256d3, atxmega384c3, atxmega384d3).
++atxmega128c3, atxmega128d3, atxmega128d4, atmxt540s, atmxt540sreva, atxmega192a3,
++atxmega192a3u, atxmega128b1, atxmega128b3, atxmega192c3, atxmega192d3, atxmega256a3,
++atxmega256a3u, atxmega256a3b, atxmega256a3bu, atxmega256c3, atxmega256d3, atxmega384c3,
++atxmega384d3).
+ 
+ Instruction set avrxmega7 is for the XMEGA AVR core with greater than 64K program
+ memory space and greater than 64K data space (MCU types: atxmega128a1,

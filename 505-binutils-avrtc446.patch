@@ -1,0 +1,40 @@
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2012-10-25 12:02:42.000000000 +0530
++++ gas/config/tc-avr.c	2012-10-25 12:41:44.000000000 +0530
+@@ -137,7 +137,6 @@ static struct mcu_type_s mcu_types[] =
+   {"attiny88",   AVR_ISA_AVR25,   bfd_mach_avr25},
+   {"attiny828",  AVR_ISA_AVR25,   bfd_mach_avr25}, 
+   {"at86rf401",  AVR_ISA_RF401,   bfd_mach_avr25},
+-  {"ata6289",    AVR_ISA_AVR25,   bfd_mach_avr25},
+   {"at43usb355", AVR_ISA_AVR3,    bfd_mach_avr3},
+   {"at76c711",   AVR_ISA_AVR3,    bfd_mach_avr3},
+   {"atmega103",  AVR_ISA_AVR31,   bfd_mach_avr31},
+@@ -154,6 +153,7 @@ static struct mcu_type_s mcu_types[] =
+   {"atmega8a",   AVR_ISA_M8,      bfd_mach_avr4},
+   {"ata6285",    AVR_ISA_AVR4,    bfd_mach_avr4},
+   {"ata6286",    AVR_ISA_AVR4,    bfd_mach_avr4},
++  {"ata6289",    AVR_ISA_AVR4,    bfd_mach_avr4},
+   {"atmega48",   AVR_ISA_AVR4,    bfd_mach_avr4},
+   {"atmega48a",  AVR_ISA_AVR4,    bfd_mach_avr4},
+   {"atmega48pa", AVR_ISA_AVR4,    bfd_mach_avr4},
+diff -Naurp gas/doc/c-avr.texi gas/doc/c-avr.texi
+--- gas/doc/c-avr.texi	2012-10-25 12:02:42.000000000 +0530
++++ gas/doc/c-avr.texi	2012-10-25 13:04:59.000000000 +0530
+@@ -46,7 +46,7 @@ space plus the MOVW instruction (MCU typ
+ attiny2313a, attiny24, attiny24a, attiny4313, attiny44, attiny44a, attiny84,
+ attiny84a, attiny25, attiny45, attiny85, attiny261, attiny261a, attiny461,
+ attiny461a, attiny861, attiny861a, attiny87, attiny43u, attiny48, attiny88,
+-attiny828, attiny841, at86rf401, ata6289, ata5272).
++attiny828, attiny841, at86rf401, ata5272).
+ 
+ Instruction set avr3 is for the classic AVR core with up to 128K program
+ memory space (MCU types: at43usb355, at76c711).
+@@ -61,7 +61,7 @@ atmega8u2, atmega16u2, atmega32u2, ata55
+ Instruction set avr4 is for the enhanced AVR core with up to 8K program
+ memory space (MCU types: atmega48, atmega48a, atmega48pa, atmega48p, atmega8, atmega8a
+ atmega88, atmega88a, atmega88p, atmega88pa, atmega8515, atmega8535, atmega8hva,
+-at90pwm1, at90pwm2, at90pwm2b, at90pwm3, at90pwm3b, at90pwm81, ata6285, ata6286).
++at90pwm1, at90pwm2, at90pwm2b, at90pwm3, at90pwm3b, at90pwm81, ata6285, ata6286, ata6289).
+ 
+ Instruction set avr5 is for the enhanced AVR core with up to 128K program
+ memory space (MCU types: at90pwm161, atmega16, atmega16a, atmega161, atmega162,

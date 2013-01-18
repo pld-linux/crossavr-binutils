@@ -22,7 +22,7 @@ diff -Naurp binutils/size.c binutils/size.c
 diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
 --- gas/config/tc-avr.c	2012-02-27 11:45:17.000000000 +0530
 +++ gas/config/tc-avr.c	2012-02-27 11:46:30.000000000 +0530
-@@ -169,6 +169,9 @@ static struct mcu_type_s mcu_types[] =
+@@ -168,6 +168,9 @@ static struct mcu_type_s mcu_types[] =
    {"at90pwm3b",  AVR_ISA_AVR4,    bfd_mach_avr4},
    {"at90pwm81",  AVR_ISA_AVR4,    bfd_mach_avr4},
    {"at90pwm161", AVR_ISA_AVR5,    bfd_mach_avr5},

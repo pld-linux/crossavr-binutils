@@ -1,5 +1,6 @@
---- bfd/elf32-avr.c	2012-04-19 14:45:03.000000000 +0530
-+++ bfd/elf32-avr.c	2012-04-19 12:04:04.000000000 +0530
+diff -Naurp bfd/elf32-avr.c bfd/elf32-avr.c
+--- bfd/elf32-avr.c	2012-07-20 18:32:17.000000000 +0530
++++ bfd/elf32-avr.c	2012-07-20 18:31:38.000000000 +0530
 @@ -516,6 +516,21 @@ static reloc_howto_type elf_avr_howto_ta
  	 0x000000ff,		/* src_mask */
  	 0x000000ff,		/* dst_mask */
@@ -50,8 +51,9 @@
      case R_AVR_16_PM:
        use_stubs = (!htab->no_stubs);
        contents += rel->r_offset;
+diff -Naurp bfd/reloc.c bfd/reloc.c
 --- bfd/reloc.c	2011-07-24 19:50:06.000000000 +0530
-+++ bfd/reloc.c	2012-04-19 14:40:17.000000000 +0530
++++ bfd/reloc.c	2012-07-20 18:31:38.000000000 +0530
 @@ -4314,6 +4314,11 @@ ENUM
  ENUMDOC
    This is a 6 bit reloc for the AVR that stores offset for adiw/sbiw
@@ -64,9 +66,10 @@
  
  ENUM
    BFD_RELOC_RX_NEG8
---- gas/config/tc-avr.c	2012-04-19 14:45:03.000000000 +0530
-+++ gas/config/tc-avr.c	2012-04-19 12:04:04.000000000 +0530
-@@ -870,17 +870,12 @@ avr_operand (struct avr_opcodes_s *opcod
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2012-07-20 18:33:14.000000000 +0530
++++ gas/config/tc-avr.c	2012-07-20 18:31:38.000000000 +0530
+@@ -879,17 +879,12 @@ avr_operand (struct avr_opcodes_s *opcod
  	  op_mask = avr_get_constant (str, 31);
  	  str = input_line_pointer;
  	}
@@ -90,7 +93,7 @@
  
        if (op_mask <= 31)
  	{
-@@ -1020,6 +1015,12 @@ avr_operand (struct avr_opcodes_s *opcod
+@@ -1029,6 +1024,12 @@ avr_operand (struct avr_opcodes_s *opcod
  		   &op_expr, FALSE, BFD_RELOC_16);
        break;
  
@@ -103,13 +106,13 @@
      case 'M':
        {
  	bfd_reloc_code_real_type r_type;
-@@ -1328,6 +1329,16 @@ md_apply_fix (fixS *fixP, valueT * valP,
+@@ -1337,6 +1338,16 @@ md_apply_fix (fixS *fixP, valueT * valP,
  	  bfd_putl16 ((bfd_vma) insn | LDI_IMMEDIATE (value), where);
  	  break;
  
 +        case BFD_RELOC_AVR_7_LDS16:
 +          if ((value < 0x40) || (value > 0xBF))
-+            as_bad_where (fixP->fx_file, fixP->fx_line,
++            as_warn_where (fixP->fx_file, fixP->fx_line,
 +                          _("operand out of range: 0x%lx"), (unsigned long)value);   
 +          insn |= value & 0xF;
 +          insn |= (value & 0x30) << 5;
@@ -120,7 +123,7 @@
  	case BFD_RELOC_AVR_6:
  	  if ((value > 63) || (value < 0))
  	    as_bad_where (fixP->fx_file, fixP->fx_line,
-@@ -1513,7 +1524,18 @@ md_assemble (char *str)
+@@ -1522,7 +1533,18 @@ md_assemble (char *str)
    if (!op[0])
      as_bad (_("can't find opcode "));
  
@@ -140,9 +143,10 @@
  
    if (opcode == NULL)
      {
---- include/elf/avr.h	2012-04-19 14:45:03.000000000 +0530
-+++ include/elf/avr.h	2012-04-19 12:04:04.000000000 +0530
-@@ -78,6 +78,7 @@ START_RELOC_NUMBERS (elf_avr_reloc_type)
+diff -Naurp include/elf/avr.h include/elf/avr.h
+--- include/elf/avr.h	2012-07-20 18:33:00.000000000 +0530
++++ include/elf/avr.h	2012-07-20 18:31:38.000000000 +0530
+@@ -79,6 +79,7 @@ START_RELOC_NUMBERS (elf_avr_reloc_type)
       RELOC_NUMBER (R_AVR_LO8_LDI_GS,	       24)
       RELOC_NUMBER (R_AVR_HI8_LDI_GS,	       25)
       RELOC_NUMBER (R_AVR_8, 		       26)
@@ -150,8 +154,9 @@
  END_RELOC_NUMBERS (R_AVR_max)
  
  #endif /* _ELF_AVR_H */
---- include/opcode/avr.h	2012-04-19 14:45:03.000000000 +0530
-+++ include/opcode/avr.h	2012-04-19 12:04:04.000000000 +0530
+diff -Naurp include/opcode/avr.h include/opcode/avr.h
+--- include/opcode/avr.h	2012-07-20 18:32:17.000000000 +0530
++++ include/opcode/avr.h	2012-07-20 18:31:38.000000000 +0530
 @@ -22,6 +22,7 @@
  #define AVR_ISA_LPM   0x0002 /* device has LPM */
  #define AVR_ISA_LPMX  0x0004 /* device has LPM Rd,Z[+] */
@@ -160,16 +165,16 @@
  #define AVR_ISA_MEGA  0x0020 /* device has >8K program memory (JMP and CALL
  				supported, no 8K wrap on RJMP and RCALL) */
  #define AVR_ISA_MUL   0x0040 /* device has new core (MUL, FMUL, ...) */
-@@ -72,7 +73,7 @@
-                         AVR_ISA_ELPM | AVR_ISA_ELPMX | AVR_ISA_SPM | \
-                         AVR_ISA_BRK | AVR_ISA_EIND | AVR_ISA_MOVW)
+@@ -74,7 +75,7 @@
+ 
+ #define AVR_ISA_AVR7   (AVR_ISA_M8 | AVR_ISA_MEGA | AVR_ISA_BRK )
  
 -#define AVR_ISA_AVRTINY10 (AVR_ISA_1200 | AVR_ISA_BRK | AVR_ISA_SRAM)
 +#define AVR_ISA_AVRTINY10 (AVR_ISA_1200 | AVR_ISA_BRK | AVR_ISA_SRAM | AVR_ISA_TINY)
  
  #define REGISTER_P(x) ((x) == 'r'		\
  		       || (x) == 'd'		\
-@@ -279,6 +280,8 @@ AVR_INSN (fmulsu,"a,a","000000111ddd1rrr
+@@ -281,6 +282,8 @@ AVR_INSN (fmulsu,"a,a","000000111ddd1rrr
  
  AVR_INSN (sts,  "i,r", "1001001ddddd0000", 2, AVR_ISA_SRAM, 0x9200)
  AVR_INSN (lds,  "r,i", "1001000ddddd0000", 2, AVR_ISA_SRAM, 0x9000)
@@ -178,8 +183,9 @@
  
  AVR_INSN (xch,  "z,r", "1001001rrrrr0100", 1, AVR_ISA_XMEGAU, 0x9204)
  AVR_INSN (las,  "z,r", "1001001rrrrr0101", 1, AVR_ISA_XMEGAU, 0x9205)
+diff -Naurp opcodes/avr-dis.c opcodes/avr-dis.c
 --- opcodes/avr-dis.c	2011-07-01 21:41:27.000000000 +0530
-+++ opcodes/avr-dis.c	2012-04-19 12:04:04.000000000 +0530
++++ opcodes/avr-dis.c	2012-07-20 18:31:38.000000000 +0530
 @@ -187,7 +187,15 @@ avr_operand (unsigned int insn, unsigned
      case 'i':
        sprintf (buf, "0x%04X", insn2);

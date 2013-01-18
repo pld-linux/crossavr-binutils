@@ -24,7 +24,7 @@ diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
    {"attiny13",   AVR_ISA_AVR25,   bfd_mach_avr25},
    {"attiny13a",  AVR_ISA_AVR25,   bfd_mach_avr25},
    {"attiny2313", AVR_ISA_AVR25,   bfd_mach_avr25},
-@@ -143,6 +144,7 @@ static struct mcu_type_s mcu_types[] =
+@@ -142,6 +143,7 @@ static struct mcu_type_s mcu_types[] =
    {"attiny167",  AVR_ISA_AVR35,   bfd_mach_avr35},
    {"at90usb82",  AVR_ISA_AVR35,   bfd_mach_avr35},
    {"at90usb162", AVR_ISA_AVR35,   bfd_mach_avr35},
@@ -39,8 +39,8 @@ diff -Naurp gas/doc/c-avr.texi gas/doc/c-avr.texi
  attiny2313a, attiny24, attiny24a, attiny4313, attiny44, attiny44a, attiny84,
  attiny84a, attiny25, attiny45, attiny85, attiny261, attiny261a, attiny461,
  attiny461a, attiny861, attiny861a, attiny87, attiny43u, attiny48, attiny88,
--attiny80, attiny828, at86rf401, ata6289).
-+attiny80, attiny828, at86rf401, ata6289, ata5272).
+-attiny828, at86rf401, ata6289).
++attiny828, at86rf401, ata6289, ata5272).
  
  Instruction set avr3 is for the classic AVR core with up to 128K program
  memory space (MCU types: at43usb355, at76c711).

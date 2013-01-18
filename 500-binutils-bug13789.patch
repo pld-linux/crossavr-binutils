@@ -1,15 +1,15 @@
 diff -Naurp bfd/archures.c bfd/archures.c
---- bfd/archures.c	2011-11-29 15:45:57.000000000 +0530
-+++ bfd/archures.c	2011-11-29 17:31:00.000000000 +0530
-@@ -381,6 +381,7 @@ DESCRIPTION
- .#define bfd_mach_avr5		5
+--- bfd/archures.c	2012-07-16 17:08:19.000000000 +0530
++++ bfd/archures.c	2012-07-16 17:12:57.000000000 +0530
+@@ -382,6 +382,7 @@ DESCRIPTION
  .#define bfd_mach_avr51		51
  .#define bfd_mach_avr6		6
-+.#define bfd_mach_avrtiny10 100 
+ .#define bfd_mach_avr7		7
++.#define bfd_mach_avrtiny10 100
  .#define bfd_mach_avrxmega1 101
  .#define bfd_mach_avrxmega2 102
  .#define bfd_mach_avrxmega3 103
-@@ -388,7 +389,6 @@ DESCRIPTION
+@@ -389,7 +390,6 @@ DESCRIPTION
  .#define bfd_mach_avrxmega5 105
  .#define bfd_mach_avrxmega6 106
  .#define bfd_mach_avrxmega7 107
@@ -18,8 +18,8 @@ diff -Naurp bfd/archures.c bfd/archures.c
  .#define bfd_mach_bfin          1
  .  bfd_arch_cr16,       {* National Semiconductor CompactRISC (ie CR16). *}
 diff -Naurp bfd/bfd-in2.h bfd/bfd-in2.h
---- bfd/bfd-in2.h	2011-11-29 15:45:57.000000000 +0530
-+++ bfd/bfd-in2.h	2011-11-29 17:31:00.000000000 +0530
+--- bfd/bfd-in2.h	2012-07-16 17:08:19.000000000 +0530
++++ bfd/bfd-in2.h	2012-07-16 17:12:57.000000000 +0530
 @@ -2088,6 +2088,7 @@ enum bfd_architecture
  #define bfd_mach_avr5          5
  #define bfd_mach_avr51         51
@@ -37,41 +37,41 @@ diff -Naurp bfd/bfd-in2.h bfd/bfd-in2.h
  #define bfd_mach_bfin          1
    bfd_arch_cr16,       /* National Semiconductor CompactRISC (ie CR16). */
 diff -Naurp bfd/cpu-avr.c bfd/cpu-avr.c
---- bfd/cpu-avr.c	2011-11-29 15:45:57.000000000 +0530
-+++ bfd/cpu-avr.c	2011-11-29 17:31:00.000000000 +0530
-@@ -135,29 +135,29 @@ static const bfd_arch_info_type arch_inf
-   /* 3-Byte PC.  */
-   N (22, bfd_mach_avr6, "avr:6", FALSE, & arch_info_struct[10]),
+--- bfd/cpu-avr.c	2012-07-16 17:08:19.000000000 +0530
++++ bfd/cpu-avr.c	2012-07-16 17:12:57.000000000 +0530
+@@ -138,29 +138,29 @@ static const bfd_arch_info_type arch_inf
+   /* 20K flash. starts at 0x8000 */
+   N (16, bfd_mach_avr7, "avr:7", FALSE, & arch_info_struct[11]),
    
 +  /* attiny 10 */
-+  N (16, bfd_mach_avrtiny10, "avr:100", FALSE, & arch_info_struct[11]),
-+  
++  N (16, bfd_mach_avrtiny10, "avr:100", FALSE, & arch_info_struct[12]),
++
    /* Xmega 1 */
--  N (24, bfd_mach_avrxmega1, "avr:101", FALSE, & arch_info_struct[11]),
-+  N (24, bfd_mach_avrxmega1, "avr:101", FALSE, & arch_info_struct[12]),
+-  N (24, bfd_mach_avrxmega1, "avr:101", FALSE, & arch_info_struct[12]),
++  N (24, bfd_mach_avrxmega1, "avr:101", FALSE, & arch_info_struct[13]),
  
    /* Xmega 2 */
--  N (24, bfd_mach_avrxmega2, "avr:102", FALSE, & arch_info_struct[12]),
-+  N (24, bfd_mach_avrxmega2, "avr:102", FALSE, & arch_info_struct[13]),
+-  N (24, bfd_mach_avrxmega2, "avr:102", FALSE, & arch_info_struct[13]),
++  N (24, bfd_mach_avrxmega2, "avr:102", FALSE, & arch_info_struct[14]),
    
    /* Xmega 3 */
--  N (24, bfd_mach_avrxmega3, "avr:103", FALSE, & arch_info_struct[13]),
-+  N (24, bfd_mach_avrxmega3, "avr:103", FALSE, & arch_info_struct[14]),
+-  N (24, bfd_mach_avrxmega3, "avr:103", FALSE, & arch_info_struct[14]),
++  N (24, bfd_mach_avrxmega3, "avr:103", FALSE, & arch_info_struct[15]),
    
    /* Xmega 4 */
--  N (24, bfd_mach_avrxmega4, "avr:104", FALSE, & arch_info_struct[14]),
-+  N (24, bfd_mach_avrxmega4, "avr:104", FALSE, & arch_info_struct[15]),
+-  N (24, bfd_mach_avrxmega4, "avr:104", FALSE, & arch_info_struct[15]),
++  N (24, bfd_mach_avrxmega4, "avr:104", FALSE, & arch_info_struct[16]),
    
    /* Xmega 5 */
--  N (24, bfd_mach_avrxmega5, "avr:105", FALSE, & arch_info_struct[15]),
-+  N (24, bfd_mach_avrxmega5, "avr:105", FALSE, & arch_info_struct[16]),
+-  N (24, bfd_mach_avrxmega5, "avr:105", FALSE, & arch_info_struct[16]),
++  N (24, bfd_mach_avrxmega5, "avr:105", FALSE, & arch_info_struct[17]),
    
    /* Xmega 6 */
--  N (24, bfd_mach_avrxmega6, "avr:106", FALSE, & arch_info_struct[16]),
-+  N (24, bfd_mach_avrxmega6, "avr:106", FALSE, & arch_info_struct[17]),
+-  N (24, bfd_mach_avrxmega6, "avr:106", FALSE, & arch_info_struct[17]),
++  N (24, bfd_mach_avrxmega6, "avr:106", FALSE, & arch_info_struct[18]),
    
    /* Xmega 7 */
--  N (24, bfd_mach_avrxmega7, "avr:107", FALSE, & arch_info_struct[17]),
+-  N (24, bfd_mach_avrxmega7, "avr:107", FALSE, & arch_info_struct[18]),
 -  
 -  /* attiny 10 */
 -  N (16, bfd_mach_avrtiny10, "avr:201", FALSE, NULL)
@@ -80,17 +80,19 @@ diff -Naurp bfd/cpu-avr.c bfd/cpu-avr.c
  };
  
 diff -Naurp include/elf/avr.h include/elf/avr.h
---- include/elf/avr.h	2011-11-29 15:45:58.000000000 +0530
-+++ include/elf/avr.h	2011-11-29 17:31:00.000000000 +0530
-@@ -40,6 +40,7 @@
+--- include/elf/avr.h	2012-07-16 17:08:19.000000000 +0530
++++ include/elf/avr.h	2012-07-16 17:12:57.000000000 +0530
+@@ -40,7 +40,8 @@
  #define E_AVR_MACH_AVR5 5
  #define E_AVR_MACH_AVR51 51
  #define E_AVR_MACH_AVR6 6 
-+#define E_AVR_MACH_AVRTINY10 100
+-#define E_AVR_MACH_AVR7 7 
++#define E_AVR_MACH_AVR7 7
++#define E_AVR_MACH_AVRTINY10 100 
  #define E_AVR_MACH_XMEGA1 101
  #define E_AVR_MACH_XMEGA2 102
  #define E_AVR_MACH_XMEGA3 103
-@@ -47,7 +48,6 @@
+@@ -48,7 +49,6 @@
  #define E_AVR_MACH_XMEGA5 105
  #define E_AVR_MACH_XMEGA6 106
  #define E_AVR_MACH_XMEGA7 107
@@ -99,8 +101,8 @@ diff -Naurp include/elf/avr.h include/elf/avr.h
  /* Relocations.  */
  START_RELOC_NUMBERS (elf_avr_reloc_type)
 diff -Naurp ld/emulparams/avrtiny10.sh ld/emulparams/avrtiny10.sh
---- ld/emulparams/avrtiny10.sh	2011-11-29 15:45:58.000000000 +0530
-+++ ld/emulparams/avrtiny10.sh	2011-11-29 17:31:00.000000000 +0530
+--- ld/emulparams/avrtiny10.sh	2012-07-16 17:08:19.000000000 +0530
++++ ld/emulparams/avrtiny10.sh	2012-07-16 17:12:57.000000000 +0530
 @@ -1,12 +1,13 @@
 -ARCH=avr:201
 +ARCH=avr:100
@@ -120,9 +122,9 @@ diff -Naurp ld/emulparams/avrtiny10.sh ld/emulparams/avrtiny10.sh
 +DATA_LENGTH=0x100
  EXTRA_EM_FILE=avrelf
 diff -Naurp ld/Makefile.am ld/Makefile.am
---- ld/Makefile.am	2011-11-29 15:45:58.000000000 +0530
-+++ ld/Makefile.am	2011-11-29 17:31:00.000000000 +0530
-@@ -820,7 +820,7 @@ eavrxmega7.c: $(srcdir)/emulparams/avrxm
+--- ld/Makefile.am	2012-07-16 17:08:19.000000000 +0530
++++ ld/Makefile.am	2012-07-16 17:12:57.000000000 +0530
+@@ -825,7 +825,7 @@ eavrxmega7.c: $(srcdir)/emulparams/avrxm
    ${GEN_DEPENDS}
  	${GENSCRIPTS} avrxmega7 "$(tdir_avr2)"
  eavrtiny10.c: $(srcdir)/emulparams/avrtiny10.sh \
@@ -133,7 +135,7 @@ diff -Naurp ld/Makefile.am ld/Makefile.am
  ecoff_i860.c: $(srcdir)/emulparams/coff_i860.sh \
 diff -Naurp ld/scripttempl/avrtiny10.sc ld/scripttempl/avrtiny10.sc
 --- ld/scripttempl/avrtiny10.sc	1970-01-01 05:30:00.000000000 +0530
-+++ ld/scripttempl/avrtiny10.sc	2011-11-29 17:31:00.000000000 +0530
++++ ld/scripttempl/avrtiny10.sc	2012-07-16 17:12:57.000000000 +0530
 @@ -0,0 +1,240 @@
 +cat <<EOF
 +OUTPUT_FORMAT("${OUTPUT_FORMAT}","${OUTPUT_FORMAT}","${OUTPUT_FORMAT}")
