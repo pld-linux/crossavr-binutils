@@ -1,0 +1,20 @@
+--- binutils-2.22/bfd/doc/Makefile.am~	2009-08-22 21:02:56.000000000 +0200
++++ binutils-2.22/bfd/doc/Makefile.am	2013-06-05 20:00:58.095271800 +0200
+@@ -1,6 +1,6 @@
+ ## Process this file with automake to generate Makefile.in
+ 
+-AUTOMAKE_OPTIONS = 1.9 cygnus
++AUTOMAKE_OPTIONS = 1.9
+ 
+ DOCFILES = aoutx.texi  archive.texi archures.texi \
+ 	bfdt.texi  cache.texi coffcode.texi \
+--- binutils-2.22/binutils/doc/Makefile.am~	2013-06-05 19:59:40.011253542 +0200
++++ binutils-2.22/binutils/doc/Makefile.am	2013-06-05 20:00:23.501635175 +0200
+@@ -1,7 +1,5 @@
+ ## Process this file with automake to generate Makefile.in
+ 
+-AUTOMAKE_OPTIONS = cygnus
+-
+ # What version of the manual you want; "all" includes everything
+ CONFIG=all
+ 

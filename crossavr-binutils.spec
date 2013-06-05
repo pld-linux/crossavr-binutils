@@ -6,8 +6,9 @@ Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - AV
 Summary(tr.UTF-8):	GNU geliştirme araçları - AVR binutils
 Name:		crossavr-binutils
 Version:	2.22
-Release:	2
+Release:	3
 Epoch:		1
+Patch0:		am.patch
 # Patches 1xx are taken form Atmel official AVR8-GNU toolchain version 3.4.1.830
 Patch100:	300-binutils-avr-size.patch
 Patch101:	301-binutils-avr-coff.patch
@@ -106,6 +107,7 @@ Ten pakiet zawiera wersję skrośną generującą kod dla Atmel AVR.
 
 %prep
 %setup -q -n binutils-%{version}
+%patch0 -p1
 %patch100 -p0
 %patch101 -p0
 %patch102 -p0
