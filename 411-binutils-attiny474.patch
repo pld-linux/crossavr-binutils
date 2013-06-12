@@ -1,0 +1,38 @@
+diff -Naurp binutils/size.c binutils/size.c
+--- binutils/size.c	2013-01-28 11:54:59.000000000 +0530
++++ binutils/size.c	2013-01-28 11:58:55.000000000 +0530
+@@ -393,6 +393,7 @@ avr_device_t avr[] =
+ 	{"attiny26",      AVR2K,   AVR128, AVR128},
+ 	{"attiny261",     AVR2K,   AVR128, AVR128},
+ 	{"attiny261a",    AVR2K,   AVR128, AVR128},
++	{"attiny474",	  AVR4K,   AVR256, AVR64},
+ 	{"attiny28",      AVR2K,   0UL,    0UL},
+ 	{"attiny40",      AVR2K,   AVR256, 0UL},
+ 
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2013-01-28 11:54:58.000000000 +0530
++++ gas/config/tc-avr.c	2013-01-28 11:57:57.000000000 +0530
+@@ -126,6 +126,7 @@ static struct mcu_type_s mcu_types[] =
+   {"attiny841",  AVR_ISA_AVR25,   bfd_mach_avr25},
+   {"attiny261",  AVR_ISA_AVR25,   bfd_mach_avr25},
+   {"attiny261a", AVR_ISA_AVR25,   bfd_mach_avr25},
++  {"attiny474",  AVR_ISA_AVR25,   bfd_mach_avr25},
+   {"attiny461",  AVR_ISA_AVR25,   bfd_mach_avr25},
+   {"attiny461a", AVR_ISA_AVR25,   bfd_mach_avr25},
+   {"attiny861",  AVR_ISA_AVR25,   bfd_mach_avr25},
+diff -Naurp gas/doc/c-avr.texi gas/doc/c-avr.texi
+--- gas/doc/c-avr.texi	2013-01-28 11:54:58.000000000 +0530
++++ gas/doc/c-avr.texi	2013-01-28 11:59:46.000000000 +0530
+@@ -44,9 +44,9 @@ at90s8535).
+ Instruction set avr25 is for the classic AVR core with up to 8K program memory
+ space plus the MOVW instruction (MCU types: attiny13, attiny13a, attiny2313,
+ attiny2313a, attiny24, attiny24a, attiny4313, attiny44, attiny44a, attiny84,
+-attiny84a, attiny25, attiny45, attiny85, attiny261, attiny261a, attiny461,
+-attiny461a, attiny861, attiny861a, attiny87, attiny43u, attiny48, attiny88,
+-attiny828, attiny841, at86rf401, ata5272).
++attiny84a, attiny25, attiny45, attiny85, attiny261, attiny261a, attiny474, 
++attiny461, attiny461a, attiny861, attiny861a, attiny87, attiny43u, attiny48,
++attiny88,attiny828, attiny841, at86rf401, ata5272).
+ 
+ Instruction set avr3 is for the classic AVR core with up to 128K program
+ memory space (MCU types: at43usb355, at76c711).

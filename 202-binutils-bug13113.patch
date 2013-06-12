@@ -1,0 +1,48 @@
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2013-01-02 16:33:12.000000000 +0530
++++ gas/config/tc-avr.c	2013-01-02 16:44:28.000000000 +0530
+@@ -404,7 +404,8 @@ static struct hash_control *avr_mod_hash
+ #define OPTION_MMCU 'm'
+ enum options
+ {
+-  OPTION_ALL_OPCODES = OPTION_MD_BASE + 1,
++  OPTION_MLIST_DEVICES = OPTION_MD_BASE + 1,
++  OPTION_ALL_OPCODES,
+   OPTION_NO_SKIP_BUG,
+   OPTION_NO_WRAP,
+   OPTION_LINK_RELAX
+@@ -413,6 +414,7 @@ enum options
+ struct option md_longopts[] =
+ {
+   { "mmcu",   required_argument, NULL, OPTION_MMCU        },
++  { "mlist-devices", no_argument, NULL, OPTION_MLIST_DEVICES },
+   { "mall-opcodes", no_argument, NULL, OPTION_ALL_OPCODES },
+   { "mno-skip-bug", no_argument, NULL, OPTION_NO_SKIP_BUG },
+   { "mno-wrap",     no_argument, NULL, OPTION_NO_WRAP     },
+@@ -518,14 +520,14 @@ md_show_usage (FILE *stream)
+ 	"                   avrtiny   - AVR Tiny core\n"
+ 	"                   or immediate microcontroller name.\n"));
+   fprintf (stream,
+-      _("  -mall-opcodes    accept all AVR opcodes, even if not supported by MCU\n"
++       _("  -mlist-devices   list all supported devices\n"
++    "  -mall-opcodes    accept all AVR opcodes, even if not supported by MCU\n"
+ 	"  -mno-skip-bug    disable warnings for skipping two-word instructions\n"
+ 	"                   (default for avr4, avr5)\n"
+ 	"  -mno-wrap        reject rjmp/rcall instructions with 8K wrap-around\n"
+ 	"                   (default for avr3, avr5)\n"
+     "  -mlink-relax     generate relocations for linker relaxation\n"
+     ));
+-  show_mcu_list (stream);
+ }
+ 
+ static void
+@@ -577,6 +579,9 @@ md_parse_option (int c, char *arg)
+ 		    avr_mcu->name, mcu_types[i].name);
+ 	return 1;
+       }
++    case OPTION_MLIST_DEVICES:
++      show_mcu_list(stdout);
++      exit (EXIT_SUCCESS);
+     case OPTION_ALL_OPCODES:
+       avr_opt.all_opcodes = 1;
+       return 1;

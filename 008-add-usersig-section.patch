@@ -1,0 +1,22 @@
+--- ld/scripttempl/avr.sc	2012-12-26 16:10:01.000000000 +0530
++++ ld/scripttempl/avr.sc	2012-12-26 16:00:54.000000000 +0530
+@@ -10,6 +10,7 @@ MEMORY
+   fuse      (rw!x) : ORIGIN = 0x820000, LENGTH = 1K
+   lock      (rw!x) : ORIGIN = 0x830000, LENGTH = 1K
+   signature (rw!x) : ORIGIN = 0x840000, LENGTH = 1K
++  user_signatures (rw!x) : ORIGIN = 0x850000, LENGTH = 1K
+ }
+ 
+ SECTIONS
+@@ -220,6 +221,11 @@ SECTIONS
+     KEEP(*(.signature*))
+   } ${RELOCATING+ > signature}
+ 
++  .user_signatures ${RELOCATING-0}:
++  {
++    KEEP(*(.user_signatures*))
++  } ${RELOCATING+ > user_signatures}
++
+   /* Stabs debugging sections.  */
+   .stab 0 : { *(.stab) }
+   .stabstr 0 : { *(.stabstr) }

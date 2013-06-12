@@ -1,0 +1,484 @@
+diff -Naurp bfd/elf32-avr.c bfd/elf32-avr.c
+--- bfd/elf32-avr.c	2013-01-02 16:27:32.000000000 +0530
++++ bfd/elf32-avr.c	2013-01-02 16:28:50.000000000 +0530
+@@ -34,6 +34,15 @@ static bfd_boolean debug_relax = FALSE;
+ /* Enable debugging printout at stdout with this variable.  */
+ static bfd_boolean debug_stubs = FALSE;
+ 
++static bfd_reloc_status_type
++bfd_elf_avr_diff_reloc (bfd *abfd,
++              arelent *reloc_entry,
++              asymbol *symbol,
++              void *data,
++              asection *input_section,
++              bfd *output_bfd,
++              char **error_message);
++
+ /* Hash table initialization and handling.  Code is taken from the hppa port
+    and adapted to the needs of AVR.  */
+ 
+@@ -573,6 +582,45 @@ static reloc_howto_type elf_avr_howto_ta
+          0xffff,                /* src_mask */
+          0xffff,                /* dst_mask */
+          FALSE),                /* pcrel_offset */
++  HOWTO (R_AVR_DIFF8,      /* type */
++     0,             /* rightshift */
++     0, 			/* size (0 = byte, 1 = short, 2 = long) */
++     8, 			/* bitsize */
++     FALSE,         /* pc_relative */
++     0,             /* bitpos */
++     complain_overflow_bitfield, /* complain_on_overflow */
++     bfd_elf_avr_diff_reloc, /* special_function */
++     "R_AVR_DIFF8",     /* name */ 
++     FALSE,         /* partial_inplace */ 
++     0,             /* src_mask */ 
++     0xff,          /* dst_mask */
++     FALSE),        /* pcrel_offset */
++  HOWTO (R_AVR_DIFF16,     /* type */
++     0,             /* rightshift */
++     1,			/* size (0 = byte, 1 = short, 2 = long) */
++     16,			/* bitsize */
++     FALSE,         /* pc_relative */
++     0,             /* bitpos */
++     complain_overflow_bitfield, /* complain_on_overflow */
++     bfd_elf_avr_diff_reloc, /* special_function */
++     "R_AVR_DIFF16",     /* name */ 
++     FALSE,         /* partial_inplace */ 
++     0,             /* src_mask */ 
++     0xffff,        /* dst_mask */
++     FALSE),        /* pcrel_offset */
++  HOWTO (R_AVR_DIFF32,    /* type */
++     0,             /* rightshift */
++     2,         /* size (0 = byte, 1 = short, 2 = long) */
++     32,        /* bitsize */
++     FALSE,         /* pc_relative */
++     0,             /* bitpos */
++     complain_overflow_bitfield, /* complain_on_overflow */
++     bfd_elf_avr_diff_reloc, /* special_function */
++     "R_AVR_DIFF32",     /* name */ 
++     FALSE,         /* partial_inplace */ 
++     0,             /* src_mask */ 
++     0xffffffff,    /* dst_mask */ 
++     FALSE)         /* pcrel_offset */
+ };
+ 
+ /* Map BFD reloc types to AVR ELF reloc types.  */
+@@ -615,7 +663,10 @@ static const struct avr_reloc_map avr_re
+   { BFD_RELOC_AVR_8_LO,             R_AVR_8_LO8 },
+   { BFD_RELOC_AVR_8_HI,             R_AVR_8_HI8 },
+   { BFD_RELOC_AVR_8_HLO,            R_AVR_8_HLO8 },
+-  { BFD_RELOC_AVR_7_LDS16,          R_AVR_7_LDS16 }
++  { BFD_RELOC_AVR_7_LDS16,          R_AVR_7_LDS16 },
++  { BFD_RELOC_AVR_DIFF8,            R_AVR_DIFF8 },
++  { BFD_RELOC_AVR_DIFF16,           R_AVR_DIFF16 },
++  { BFD_RELOC_AVR_DIFF32,           R_AVR_DIFF32 }
+ };
+ 
+ /* Meant to be filled one day with the wrap around address for the
+@@ -823,6 +874,22 @@ avr_get_stub_addr (bfd_vma srel,
+   return 0x020000;
+ }
+ 
++/* Perform a diff relocation. Nothing to do, as the difference value is already
++   written into the section's contents. */
++
++static bfd_reloc_status_type
++bfd_elf_avr_diff_reloc (bfd *abfd ATTRIBUTE_UNUSED,
++		      arelent *reloc_entry ATTRIBUTE_UNUSED,
++              asymbol *symbol ATTRIBUTE_UNUSED,
++              void *data ATTRIBUTE_UNUSED,
++              asection *input_section ATTRIBUTE_UNUSED,
++              bfd *output_bfd ATTRIBUTE_UNUSED,
++              char **error_message ATTRIBUTE_UNUSED)
++{
++  return bfd_reloc_ok;
++}
++
++
+ /* Perform a single relocation.  By default we use the standard BFD
+    routines, but a few relocs, we have to do them ourselves.  */
+ 
+@@ -1186,6 +1253,13 @@ avr_final_link_relocate (reloc_howto_typ
+       bfd_put_16 (input_bfd, (bfd_vma) srel &0x00ffff, contents);
+       break;
+ 
++    case R_AVR_DIFF8:
++    case R_AVR_DIFF16:
++    case R_AVR_DIFF32:
++      /* Nothing to do here, as contents already contains the diff value. */
++      r = bfd_reloc_ok;
++      break;
++
+     default:
+       r = _bfd_final_link_relocate (howto, input_bfd, input_section,
+ 				    contents, rel->r_offset,
+@@ -1502,6 +1576,99 @@ elf32_avr_object_p (bfd *abfd)
+ 				    e_set);
+ }
+ 
++/* Returns whether the relocation type passed is a diff reloc. */
++
++static bfd_boolean
++elf32_avr_is_diff_reloc (Elf_Internal_Rela *irel)
++{
++  return (ELF32_R_TYPE (irel->r_info) == R_AVR_DIFF8
++          ||ELF32_R_TYPE (irel->r_info) == R_AVR_DIFF16
++          || ELF32_R_TYPE (irel->r_info) == R_AVR_DIFF32);
++}
++
++/* Reduce the value written in the section by count if the shrinked insn address
++   happens to fall between the two symbols for which this diff reloc was 
++   emitted. */
++
++static void
++elf32_avr_adjust_diff_reloc_value (bfd *abfd,
++                                   struct bfd_section *isec,
++                                   Elf_Internal_Rela *irel,
++                                   bfd_vma symval,
++                                   bfd_vma shrinked_insn_address,
++                                   int count)
++{
++  unsigned char *isec_contents = elf_section_data (isec)->this_hdr.contents;
++  if (isec_contents == NULL)
++  {
++    if (! bfd_malloc_and_get_section (abfd, isec, &isec_contents))
++      return;
++  }
++
++  isec_contents += irel->r_offset;
++
++  /* Read value written in object file. */
++ bfd_vma x = 0;
++  switch (ELF32_R_TYPE (irel->r_info))
++  {
++  case R_AVR_DIFF8:
++    {
++      x = *isec_contents;
++      break;
++    }
++  case R_AVR_DIFF16:
++    {
++      x = bfd_get_16 (abfd, isec_contents);
++      break;
++    }
++  case R_AVR_DIFF32:
++    {
++      x = bfd_get_32 (abfd, isec_contents);
++      break;
++    }
++  default:
++    {
++      BFD_FAIL();
++    }
++  }
++
++  /* For a diff reloc sym1 - sym2 the diff at assembly time (x) is written
++     into the object file. sym2's value is represented as 
++     <start_of_section> + addend. Check if the shrinked insn falls between 
++     sym1 and sym2. */
++
++  bfd_vma end_address = symval + irel->r_addend;
++  bfd_vma start_address = end_address - x;
++
++  if (shrinked_insn_address >= start_address && 
++      shrinked_insn_address <= end_address)
++  {
++    switch (ELF32_R_TYPE (irel->r_info))
++    {
++    case R_AVR_DIFF8:
++      {
++        *isec_contents = (x - count);
++        break;
++      }
++    case R_AVR_DIFF16:
++      {
++        bfd_put_16 (abfd, (x - count) & 0xFFFF, isec_contents);
++        break;
++      }
++    case R_AVR_DIFF32:
++      {
++        bfd_put_32 (abfd, (x - count) & 0xFFFFFFFF, isec_contents);
++        break;
++      }
++    default:
++      {
++        BFD_FAIL();
++      }
++    }
++
++    elf_section_data (isec)->this_hdr.contents = isec_contents - irel->r_offset;
++  }
++}
+ 
+ /* Delete some bytes from a section while changing the size of an instruction.
+    The parameter "addr" denotes the section-relative offset pointing just
+@@ -1640,6 +1807,14 @@ elf32_avr_relax_delete_bytes (bfd *abfd,
+                    if (symval <= shrinked_insn_address
+                        && (symval + irel->r_addend) > shrinked_insn_address)
+                      {
++                       if (elf32_avr_is_diff_reloc (irel))
++                         {
++                           elf32_avr_adjust_diff_reloc_value (abfd, isec, irel,
++                                                         symval, 
++                                                         shrinked_insn_address,
++                                                        count);
++                         }
++
+                        irel->r_addend -= count;
+ 
+                        if (debug_relax)
+diff -Naurp bfd/reloc.c bfd/reloc.c
+--- bfd/reloc.c	2013-01-02 16:27:32.000000000 +0530
++++ bfd/reloc.c	2013-01-02 16:28:50.000000000 +0530
+@@ -4414,6 +4414,19 @@ ENUM
+ ENUMDOC
+   This is a 7 bit reloc for the AVR that stores offset for 16bit sts/lds
+   instructions supported only by Tiny core
++ENUM
++  BFD_RELOC_AVR_DIFF8
++ENUMX
++  BFD_RELOC_AVR_DIFF16
++ENUMX
++  BFD_RELOC_AVR_DIFF32
++ENUMDOC
++  AVR relocations to mark the difference of two local symbols.
++  These are only needed to support linker relaxation and can be ignored
++  when not relaxing.  The field is set to the value of the difference
++  assuming no relaxation.  The relocation encodes the position of the
++  second symbol so the linker can determine whether to adjust the field
++  value.
+ 
+ ENUM
+   BFD_RELOC_RL78_NEG8
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2013-01-02 16:28:02.000000000 +0530
++++ gas/config/tc-avr.c	2013-01-02 16:28:50.000000000 +0530
+@@ -342,9 +342,11 @@ struct avr_opt_s
+   int all_opcodes;  /* -mall-opcodes: accept all known AVR opcodes.  */
+   int no_skip_bug;  /* -mno-skip-bug: no warnings for skipping 2-word insns.  */
+   int no_wrap;      /* -mno-wrap: reject rjmp/rcall with 8K wrap-around.  */
++  int link_relax;   /* -mlink-relax: generate relocations for linker 
++                       relaxation. */
+ };
+ 
+-static struct avr_opt_s avr_opt = { 0, 0, 0 };
++static struct avr_opt_s avr_opt = { 0, 0, 0, 0 };
+ 
+ const char EXP_CHARS[] = "eE";
+ const char FLT_CHARS[] = "dD";
+@@ -404,7 +406,8 @@ enum options
+ {
+   OPTION_ALL_OPCODES = OPTION_MD_BASE + 1,
+   OPTION_NO_SKIP_BUG,
+-  OPTION_NO_WRAP
++  OPTION_NO_WRAP,
++  OPTION_LINK_RELAX
+ };
+ 
+ struct option md_longopts[] =
+@@ -413,6 +416,7 @@ struct option md_longopts[] =
+   { "mall-opcodes", no_argument, NULL, OPTION_ALL_OPCODES },
+   { "mno-skip-bug", no_argument, NULL, OPTION_NO_SKIP_BUG },
+   { "mno-wrap",     no_argument, NULL, OPTION_NO_WRAP     },
++  { "mlink-relax",  no_argument, NULL, OPTION_LINK_RELAX  },
+   { NULL, no_argument, NULL, 0 }
+ };
+ 
+@@ -518,7 +522,9 @@ md_show_usage (FILE *stream)
+ 	"  -mno-skip-bug    disable warnings for skipping two-word instructions\n"
+ 	"                   (default for avr4, avr5)\n"
+ 	"  -mno-wrap        reject rjmp/rcall instructions with 8K wrap-around\n"
+-	"                   (default for avr3, avr5)\n"));
++	"                   (default for avr3, avr5)\n"
++    "  -mlink-relax     generate relocations for linker relaxation\n"
++    ));
+   show_mcu_list (stream);
+ }
+ 
+@@ -580,6 +586,9 @@ md_parse_option (int c, char *arg)
+     case OPTION_NO_WRAP:
+       avr_opt.no_wrap = 1;
+       return 1;
++    case OPTION_LINK_RELAX:
++      avr_opt.link_relax = 1;
++      return 1;
+     }
+ 
+   return 0;
+@@ -630,6 +639,7 @@ md_begin (void)
+     }
+ 
+   bfd_set_arch_mach (stdoutput, TARGET_ARCH, avr_mcu->mach);
++  linkrelax = avr_opt.link_relax;
+ }
+ 
+ /* Resolve STR as a constant expression and return the result.
+@@ -1205,6 +1215,53 @@ md_pcrel_from_section (fixS *fixp, segT 
+   return fixp->fx_frag->fr_address + fixp->fx_where;
+ }
+ 
++static bfd_boolean
++relaxable_section (asection *sec)
++{
++  return (sec->flags & SEC_DEBUGGING) == 0;
++}
++
++/* Does whatever the xtensa port does. */
++int
++avr_validate_fix_sub (fixS *fix)
++{
++  segT add_symbol_segment, sub_symbol_segment;
++
++  /* The difference of two symbols should be resolved by the assembler when
++     linkrelax is not set.  If the linker may relax the section containing
++     the symbols, then an Xtensa DIFF relocation must be generated so that
++     the linker knows to adjust the difference value.  */
++  if (!linkrelax || fix->fx_addsy == NULL)
++    return 0;
++
++  /* Make sure both symbols are in the same segment, and that segment is
++     "normal" and relaxable.  If the segment is not "normal", then the
++     fix is not valid.  If the segment is not "relaxable", then the fix
++     should have been handled earlier.  */
++  add_symbol_segment = S_GET_SEGMENT (fix->fx_addsy);
++  if (! SEG_NORMAL (add_symbol_segment) ||
++      ! relaxable_section (add_symbol_segment))
++    return 0;
++
++  sub_symbol_segment = S_GET_SEGMENT (fix->fx_subsy);
++  return (sub_symbol_segment == add_symbol_segment);
++}
++
++/* TC_FORCE_RELOCATION hook */
++
++/* If linkrelax is turned on, and the symbol to relocate
++   against is in a relaxable segment, don't compute the value -
++   generate a relocation instead. */
++int
++avr_force_relocation (fixS *fix)
++{
++  if (linkrelax && fix->fx_addsy
++      && relaxable_section (S_GET_SEGMENT (fix->fx_addsy)))
++    return 1;
++
++  return generic_force_reloc (fix);
++}
++
+ /* GAS will call this for each fixup.  It should store the correct
+    value in the object file.  */
+ 
+@@ -1228,11 +1285,46 @@ md_apply_fix (fixS *fixP, valueT * valP,
+ 	  fixP->fx_done = 1;
+ 	}
+     }
++  else if (linkrelax && fixP->fx_subsy)
++    {
++      /* For a subtraction relocation expression, generate one
++         of the DIFF relocs, with the value being the difference.
++         Note that a sym1 - sym2 expression is adjusted into a 
++         section_start_sym + sym2_offset_from_section_start - sym1
++         expression. fixP->fx_addsy holds the section start symbol,
++         fixP->fx_offset holds sym2's offset, and fixP->fx_subsy
++         holds sym1. Calculate and write value, but leave fx_offset
++         as is - during relaxation, fx_offset - value gives sym1's value */
++
++       switch (fixP->fx_r_type)
++         {
++           case BFD_RELOC_8:
++             fixP->fx_r_type = BFD_RELOC_AVR_DIFF8;
++             break;
++           case BFD_RELOC_16:
++             fixP->fx_r_type = BFD_RELOC_AVR_DIFF16;
++             break;
++           case BFD_RELOC_32:
++             fixP->fx_r_type = BFD_RELOC_AVR_DIFF32;
++             break;
++           default:
++             as_bad_where (fixP->fx_file, fixP->fx_line, _("expression too complex"));
++             break;
++         }
++
++      value = S_GET_VALUE (fixP->fx_addsy) + 
++          fixP->fx_offset - S_GET_VALUE (fixP->fx_subsy);
+ 
++      fixP->fx_subsy = NULL;
++  }
+   /* We don't actually support subtracting a symbol.  */
+   if (fixP->fx_subsy != (symbolS *) NULL)
+     as_bad_where (fixP->fx_file, fixP->fx_line, _("expression too complex"));
+ 
++  /* For the DIFF relocs, write the value into the object file while still
++     keeping fx_done FALSE, as both the difference (recorded in the object file)
++     and the sym offset (part of fixP) are needed at link relax time */
++  where = (unsigned char *) fixP->fx_frag->fr_literal + fixP->fx_where;
+   switch (fixP->fx_r_type)
+     {
+     default:
+@@ -1242,6 +1334,19 @@ md_apply_fix (fixS *fixP, valueT * valP,
+     case BFD_RELOC_AVR_13_PCREL:
+     case BFD_RELOC_32:
+     case BFD_RELOC_16:
++      break;
++    case BFD_RELOC_AVR_DIFF8:
++      if (value > 255 || value < -128)
++        as_warn_where (fixP->fx_file, fixP->fx_line,
++                           _("operand out of range: %ld"), value);
++      *where = value;
++	  break;
++    case BFD_RELOC_AVR_DIFF16:
++      bfd_putl16 ((bfd_vma) value, where);
++      break;
++    case BFD_RELOC_AVR_DIFF32:
++      bfd_putl16 ((bfd_vma) value, where);
++      break;
+     case BFD_RELOC_AVR_CALL:
+       break;
+     }
+diff -Naurp gas/config/tc-avr.h gas/config/tc-avr.h
+--- gas/config/tc-avr.h	2011-03-29 23:46:15.000000000 +0530
++++ gas/config/tc-avr.h	2013-01-02 16:28:50.000000000 +0530
+@@ -93,6 +93,18 @@ extern void avr_cons_fix_new (fragS *,in
+    visible symbols can be overridden.  */
+ #define EXTERN_FORCE_RELOC 0
+ 
++/* If defined, this macro allows control over whether fixups for a
++   given section will be processed when the linkrelax variable is
++   set. Define it to zero and handle things in md_apply_fix instead.*/
++#define TC_LINKRELAX_FIXUP(SEG) 0
++
++/* If this macro returns non-zero, it guarantees that a relocation will be emitted
++   even when the value can be resolved locally. Do that if linkrelax is turned on */
++#define TC_FORCE_RELOCATION(fix)	avr_force_relocation (fix)
++#define TC_FORCE_RELOCATION_SUB_SAME(fix, seg) \
++  (! SEG_NORMAL (seg) || avr_force_relocation (fix))
++extern int avr_force_relocation (struct fix *);
++
+ /* Values passed to md_apply_fix don't include the symbol value.  */
+ #define MD_APPLY_SYM_VALUE(FIX) 0
+ 
+@@ -144,6 +156,12 @@ extern long md_pcrel_from_section (struc
+     {                                                        \
+       goto SKIP;                                             \
+    }
++  
++/* This macro is evaluated for any fixup with a fx_subsy that
++   fixup_segment cannot reduce to a number.  If the macro returns
++   false an error will be reported. */
++#define TC_VALIDATE_FIX_SUB(fix, seg)   avr_validate_fix_sub (fix)                                                                    
++extern int avr_validate_fix_sub (struct fix *);
+ 
+ /* This target is buggy, and sets fix size too large.  */
+ #define TC_FX_SIZE_SLACK(FIX) 2
+diff -Naurp include/elf/avr.h include/elf/avr.h
+--- include/elf/avr.h	2013-01-02 16:27:32.000000000 +0530
++++ include/elf/avr.h	2013-01-02 16:28:50.000000000 +0530
+@@ -83,6 +83,9 @@ START_RELOC_NUMBERS (elf_avr_reloc_type)
+      RELOC_NUMBER (R_AVR_8_HI8,                28)
+      RELOC_NUMBER (R_AVR_8_HLO8,               29)
+      RELOC_NUMBER (R_AVR_7_LDS16,              30)
++     RELOC_NUMBER (R_AVR_DIFF8,                31)
++     RELOC_NUMBER (R_AVR_DIFF16,               32)
++     RELOC_NUMBER (R_AVR_DIFF32,               33)
+ END_RELOC_NUMBERS (R_AVR_max)
+ 
+ #endif /* _ELF_AVR_H */

@@ -1,0 +1,34 @@
+diff -Naurp binutils/size.c binutils/size.c
+--- binutils/size.c	2012-12-10 16:44:06.000000000 +0530
++++ binutils/size.c	2012-12-10 16:59:46.000000000 +0530
+@@ -203,6 +203,7 @@ avr_device_t avr[] =
+ 	{"at90usb647",    AVR64K,  AVR4K,  AVR2K},
+ 	{"ata5505",       AVR16K,  AVR512, AVR512},
+ 	{"ata5790",       AVR16K,  AVR512, AVR2112},
++	{"ata5790n",      AVR16K,  AVR512, AVR2112},
+ 	{"ata5795",       AVR8K,   AVR512, AVR2112},
+ 	{"ata5272",       AVR8K,   AVR512, AVR512},
+ 	{"atmega64",      AVR64K,  AVR4K,  AVR2K},
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2012-12-10 16:44:06.000000000 +0530
++++ gas/config/tc-avr.c	2012-12-10 17:00:23.000000000 +0530
+@@ -172,6 +172,7 @@ static struct mcu_type_s mcu_types[] =
+   {"at90pwm81",  AVR_ISA_AVR4,    bfd_mach_avr4},
+   {"at90pwm161", AVR_ISA_AVR5,    bfd_mach_avr5},
+   {"ata5790",    AVR_ISA_AVR5,    bfd_mach_avr5},
++  {"ata5790n",   AVR_ISA_AVR5,    bfd_mach_avr5},
+   {"ata5795",    AVR_ISA_AVR5,    bfd_mach_avr5},
+   {"atmega16",   AVR_ISA_AVR5,    bfd_mach_avr5},
+   {"atmega16a",  AVR_ISA_AVR5,    bfd_mach_avr5},
+diff -Naurp gas/doc/c-avr.texi gas/doc/c-avr.texi
+--- gas/doc/c-avr.texi	2012-12-10 16:44:06.000000000 +0530
++++ gas/doc/c-avr.texi	2012-12-10 17:01:20.000000000 +0530
+@@ -81,7 +81,7 @@ atmega6490p, atmega16hva, atmega16hva2, 
+ atmega26hvg, atmega32hvb, atmega48hvf, atmega32hvbrevb, atmega64hve, at90can32,
+ at90can64, at90pwm161, at90pwm216, at90pwm316, atmega32c1, atmega64c1, atmega16m1,
+ atmega32m1, atmega64m1, atmega16u4, atmega32u4, atmega32u6, at90usb646,at90usb647,
+-at94k, at90scr100, ata5790, ata5795).
++at94k, at90scr100, ata5790, ata5790n, ata5795).
+ 
+ Instruction set avr51 is for the enhanced AVR core with exactly 128K program
+ memory space (MCU types: atmega128, atmega128a, atmega1280, atmega1281, 

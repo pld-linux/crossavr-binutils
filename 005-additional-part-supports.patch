@@ -1,0 +1,105 @@
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2013-02-06 16:41:25.000000000 +0530
++++ gas/config/tc-avr.c	2013-02-06 16:38:01.000000000 +0530
+@@ -216,6 +216,8 @@ static struct mcu_type_s mcu_types[] =
+   {"atmega3290p",AVR_ISA_AVR5,    bfd_mach_avr5},
+   {"atmega3290pa",AVR_ISA_AVR5,   bfd_mach_avr5},
+   {"atmega406",  AVR_ISA_AVR5,    bfd_mach_avr5},
++  {"atmega64rfr2", AVR_ISA_AVR5,  bfd_mach_avr5},
++  {"atmega644rfr2",AVR_ISA_AVR5,  bfd_mach_avr5},
+   {"atmega64",   AVR_ISA_AVR5,    bfd_mach_avr5},
+   {"atmega64a",  AVR_ISA_AVR5,    bfd_mach_avr5},
+   {"atmega640",  AVR_ISA_AVR5,    bfd_mach_avr5},
+@@ -267,11 +269,15 @@ static struct mcu_type_s mcu_types[] =
+   {"atmega1284", AVR_ISA_AVR51,   bfd_mach_avr51},
+   {"atmega1284p",AVR_ISA_AVR51,   bfd_mach_avr51},
+   {"atmega128rfa1",AVR_ISA_AVR51, bfd_mach_avr51},
++  {"atmega128rfr2",AVR_ISA_AVR51, bfd_mach_avr51},
++  {"atmega1284rfr2",AVR_ISA_AVR51, bfd_mach_avr51},
+   {"at90can128", AVR_ISA_AVR51,   bfd_mach_avr51},
+   {"at90usb1286",AVR_ISA_AVR51,   bfd_mach_avr51},
+   {"at90usb1287",AVR_ISA_AVR51,   bfd_mach_avr51},
+   {"atmega2560", AVR_ISA_AVR6,    bfd_mach_avr6},
+   {"atmega2561", AVR_ISA_AVR6,    bfd_mach_avr6},
++  {"atmega256rfr2", AVR_ISA_AVR6, bfd_mach_avr6},
++  {"atmega2564rfr2",AVR_ISA_AVR6, bfd_mach_avr6},
+   {"atxmega16a4", AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
+   {"atxmega16a4u",AVR_ISA_XMEGAU, bfd_mach_avrxmega2},
+   {"atxmega16c4", AVR_ISA_XMEGAU, bfd_mach_avrxmega2},
+@@ -281,6 +287,9 @@ static struct mcu_type_s mcu_types[] =
+   {"atxmega32a4u",AVR_ISA_XMEGAU, bfd_mach_avrxmega2},
+   {"atxmega32c4", AVR_ISA_XMEGAU, bfd_mach_avrxmega2},
+   {"atxmega32d4", AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
++  {"atxmega32e5", AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
++  {"atxmega16e5", AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
++  {"atxmega8e5",  AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
+   {"atxmega32x1", AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
+   {"atxmega64a3", AVR_ISA_XMEGA,  bfd_mach_avrxmega4},
+   {"atxmega64a3u",AVR_ISA_XMEGAU, bfd_mach_avrxmega4},
+@@ -289,6 +298,7 @@ static struct mcu_type_s mcu_types[] =
+   {"atxmega64b3", AVR_ISA_XMEGAU, bfd_mach_avrxmega4},
+   {"atxmega64c3", AVR_ISA_XMEGAU,  bfd_mach_avrxmega4},
+   {"atxmega64d3", AVR_ISA_XMEGA,  bfd_mach_avrxmega4},
++  {"atxmega64d4", AVR_ISA_XMEGA,  bfd_mach_avrxmega4},
+   {"atxmega64a1", AVR_ISA_XMEGA,  bfd_mach_avrxmega5},
+   {"atxmega64a1u",AVR_ISA_XMEGAU,  bfd_mach_avrxmega5},
+   {"atxmega128a3", AVR_ISA_XMEGA, bfd_mach_avrxmega6},
+diff -Naurp gas/doc/c-avr.texi gas/doc/c-avr.texi
+--- gas/doc/c-avr.texi	2013-02-06 16:41:25.000000000 +0530
++++ gas/doc/c-avr.texi	2013-02-06 16:40:55.000000000 +0530
+@@ -67,41 +67,41 @@ ata6285, ata6286).
+ Instruction set avr5 is for the enhanced AVR core with up to 128K program
+ memory space (MCU types: at90pwm161, atmega16, atmega16a, atmega161, atmega162,
+ atmega163, atmega164a, atmega164p, atmega164pa, atmega165, atmega165a, 
+-atmega165p, atmega165pa, atmega168, atmega168a, atmega168p, atmega168pa, 
++atmega165p, atmega165pa, atmega168, atmega168a, atmega168p, atmega168pa,
+ atmega169, atmega169a, atmega169p, atmega169pa, atmega32, atmega323, atmega324a,
+ atmega324p, atmega324pa, atmega325, atmega325a, atmega32, atmega32a, atmega323,
+ atmega324a, atmega324p, atmega324pa, atmega325, atmega325a, atmega325p,
+ atmega325p, atmega325pa, atmega3250, atmega3250a, atmega3250p, atmega3250pa, 
+ atmega328, atmega328p, atmega329, atmega329a, atmega329p, atmega329pa, 
+ atmega3290a, atmega3290p, atmega3290pa, atmega406, atmega64, atmega64a, 
+-atmega640, atmega644, atmega644a, atmega644p, atmega644pa, atmega645, 
+-atmega645a, atmega645p, atmega6450, atmega6450a, atmega6450p, atmega649, 
+-atmega649a, atmega649p, atmega6490, atmega6490a, atmega6490p, atmega16hva, 
+-atmega16hva2, atmega16hvb, atmega16hvbrevb, atmega32hvb, atmega32hvbrevb, 
+-atmega64hve, at90can32, at90can64, at90pwm161, at90pwm216, at90pwm316, 
+-atmega32c1, atmega64c1, atmega16m1, atmega32m1, atmega64m1, atmega16u4, 
+-atmega32u4, atmega32u6, at90usb646, at90usb647, at94k, at90scr100,
+-ata5790, ata5795).
++atmega64rfr2, atmega644rfr2, atmega640, atmega644, atmega644a, atmega644p,
++atmega644pa, atmega645, atmega645a, atmega645p, atmega6450, atmega6450a,
++atmega6450p, atmega649, atmega649a, atmega649p, atmega6490, atmega6490a,
++atmega6490p, atmega16hva, atmega16hva2, atmega16hvb, atmega16hvbrevb, 
++atmega32hvb, atmega32hvbrevb, atmega64hve, at90can32, at90can64, at90pwm161,
++at90pwm216, at90pwm316, atmega32c1, atmega64c1, atmega16m1, atmega32m1,
++atmega64m1, atmega16u4, atmega32u4, atmega32u6, at90usb646, at90usb647, at94k,
++at90scr100, ata5790, ata5795).
+ 
+ Instruction set avr51 is for the enhanced AVR core with exactly 128K program
+ memory space (MCU types: atmega128, atmega128a, atmega1280, atmega1281, 
+-atmega1284, atmega1284p, atmega128rfa1, at90can128, at90usb1286, at90usb1287,
+-m3000).
++atmega1284, atmega1284p, atmega128rfa1, atmega128rfr2, atmega1284rfr2,
++at90can128, at90usb1286, at90usb1287, m3000).
+ 
+ Instruction set avr6 is for the enhanced AVR core with a 3-byte PC (MCU types:
+-atmega2560, atmega2561).
++atmega2560, atmega2561, atmega256rfr2, atmega2564rfr2).
+ 
+ Instruction set avrxmega2 is for the XMEGA AVR core with 8K to 64K program
+ memory space and less than 64K data space (MCU types: atxmega16a4, atxmega16a4u,
+ atxmega16c4, atxmega16d4, atxmega16x1, atxmega32a4, atxmega32a4u, atxmega32c4, 
+-atxmega32d4, atxmega32x1).
++atxmega32d4, atxmega16e5, atxmega8e5, atxmega32e5, atxmega32x1).
+ 
+ Instruction set avrxmega3 is for the XMEGA AVR core with 8K to 64K program
+ memory space and greater than 64K data space (MCU types: none).
+ 
+ Instruction set avrxmega4 is for the XMEGA AVR core with up to 64K program
+ memory space and less than 64K data space (MCU types: atxmega64a3, atxmega64a3u, 
+-atxmega64a4u, atxmega64b1, atxmega64b3, atxmega64c3, atxmega64d3).
++atxmega64a4u, atxmega64b1, atxmega64b3, atxmega64c3, atxmega64d3, atxmega64d4).
+ 
+ Instruction set avrxmega5 is for the XMEGA AVR core with up to 64K program 
+ memory space and greater than 64K data space (MCU types: atxmega64a1,

@@ -1,0 +1,34 @@
+diff -Naurp binutils/size.c binutils/size.c
+--- binutils/size.c	2013-03-25 10:48:20.000000000 +0530
++++ binutils/size.c	2013-03-25 11:17:54.000000000 +0530
+@@ -239,6 +239,7 @@ avr_device_t avr[] =
+ 
+ 	{"atmxt224",      AVR36K,  AVR9K,  0UL},
+ 	{"atmxt224e",     AVR36K,  AVR9K,  0UL},
++	{"atmxts200",	  AVR16K,  AVR1K,  0UL},
+ 	{"atxmega32a4",   AVR36K,  AVR4K,  AVR1K},
+ 	{"atxmega32a4u",  AVR36K,  AVR4K,  AVR1K},
+ 	{"atxmega32c4",   AVR36K,  AVR4K,  AVR1K},
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2013-03-25 10:48:19.000000000 +0530
++++ gas/config/tc-avr.c	2013-03-25 11:49:54.000000000 +0530
+@@ -306,6 +306,7 @@ static struct mcu_type_s mcu_types[] =
+   {"atxmega16e5", AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
+   {"atxmega8e5",  AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
+   {"atxmega32x1", AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
++  {"atmxts200",   AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
+   {"atxmega64a3", AVR_ISA_XMEGA,  bfd_mach_avrxmega4},
+   {"atxmega64a3u",AVR_ISA_XMEGAU, bfd_mach_avrxmega4},
+   {"atxmega64a4u",AVR_ISA_XMEGAU, bfd_mach_avrxmega4},
+diff -Naurp gas/doc/c-avr.texi gas/doc/c-avr.texi
+--- gas/doc/c-avr.texi	2013-03-25 10:48:19.000000000 +0530
++++ gas/doc/c-avr.texi	2013-03-25 11:49:16.000000000 +0530
+@@ -98,7 +98,7 @@ Instruction set avrxmega2 is for the XME
+ memory space and less than 64K data space (MCU types: atxmega16a4, atxmega16a4u,
+ atxmega16c4, atxmega16d4, atxmega16x1, atxmega32a4, atxmega32a4u, atxmega32c4, 
+ atxmega32d4, atxmega16e5, atxmega8e5, atxmega32e5, atxmega32x1, atmxt224,
+-atmxt224e, atmxt336s, atmxt112sl).
++atmxt224e, atmxt336s, atmxt112sl, atmxts200).
+ 
+ Instruction set avrxmega3 is for the XMEGA AVR core with 8K to 64K program
+ memory space and greater than 64K data space (MCU types: none).

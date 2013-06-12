@@ -1,0 +1,35 @@
+diff -Naurp binutils/size.c binutils/size.c
+--- binutils/size.c	2012-12-17 18:19:57.000000000 +0530
++++ binutils/size.c	2012-12-17 18:21:14.000000000 +0530
+@@ -224,6 +224,8 @@ avr_device_t avr[] =
+ 	
+ 	{"atmxt336s",     AVR52K,  AVR14K, 0UL},
+ 
++	{"atmxt112sl",    AVR48K,  AVR8K,  0UL},
++
+ 	{"atmega406",     AVR40K,  AVR2K,  AVR512},
+ 
+ 	{"atmxt224",      AVR36K,  AVR9K,  0UL},
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2012-12-17 18:19:57.000000000 +0530
++++ gas/config/tc-avr.c	2012-12-17 18:21:14.000000000 +0530
+@@ -280,6 +280,7 @@ static struct mcu_type_s mcu_types[] =
+   {"atmega2561", AVR_ISA_AVR6,    bfd_mach_avr6},
+   {"atmega256rfr2", AVR_ISA_AVR6, bfd_mach_avr6},
+   {"atmega2564rfr2",AVR_ISA_AVR6, bfd_mach_avr6},
++  {"atmxt112sl",  AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
+   {"atmxt224",    AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
+   {"atmxt224e",   AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
+   {"atmxt336s",   AVR_ISA_XMEGA,  bfd_mach_avrxmega2},
+diff -Naurp gas/doc/c-avr.texi gas/doc/c-avr.texi
+--- gas/doc/c-avr.texi	2012-12-17 18:19:57.000000000 +0530
++++ gas/doc/c-avr.texi	2012-12-17 18:21:58.000000000 +0530
+@@ -95,7 +95,7 @@ Instruction set avrxmega2 is for the XME
+ memory space and less than 64K data space (MCU types: atxmega16a4, atxmega16a4u,
+ atxmega16c4, atxmega16d4, atxmega16x1, atxmega32a4, atxmega32a4u, atxmega32c4, 
+ atxmega32d4, atxmega16e5, atxmega8e5, atxmega32e5, atxmega32x1, atmxt224,
+-atmxt224e, atmxt336s).
++atmxt224e, atmxt336s, atmxt112sl).
+ 
+ Instruction set avrxmega3 is for the XMEGA AVR core with 8K to 64K program
+ memory space and greater than 64K data space (MCU types: none).

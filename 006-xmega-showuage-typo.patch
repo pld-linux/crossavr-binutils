@@ -1,0 +1,11 @@
+diff -Naurp gas/config/tc-avr.c gas/config/tc-avr.c
+--- gas/config/tc-avr.c	2012-12-17 19:31:00.000000000 +0530
++++ gas/config/tc-avr.c	2012-12-17 19:34:49.000000000 +0530
+@@ -505,6 +505,7 @@ md_show_usage (FILE *stream)
+ 	"                   avr5  - enhanced AVR core with up to 64K program memory\n"
+ 	"                   avr51 - enhanced AVR core with up to 128K program memory\n"
+ 	"                   avr6  - enhanced AVR core with up to 256K program memory\n"
++	"                   avrxmega2 - XMEGA, > 8K, < 64K FLASH, < 64K RAM\n"
+ 	"                   avrxmega3 - XMEGA, > 8K, <= 64K FLASH, > 64K RAM\n"
+ 	"                   avrxmega4 - XMEGA, > 64K, <= 128K FLASH, <= 64K RAM\n"
+ 	"                   avrxmega5 - XMEGA, > 64K, <= 128K FLASH, > 64K RAM\n"
