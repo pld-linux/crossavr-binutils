@@ -47,7 +47,7 @@ BuildRequires:	automake
 BuildRequires:	bash
 BuildRequires:	bison
 BuildRequires:	flex
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-tools
 BuildRequires:	gcc-c++
 BuildRequires:	perl-tools-pod
 BuildRequires:	texinfo
