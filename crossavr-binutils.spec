@@ -40,10 +40,11 @@ Patch125:	412-binutils-atmxts200.patch
 Patch126:	500-binutils-avrtc530-backported.patch
 License:	GPL
 Group:		Development/Tools
-Source0:	ftp://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
+Source0:	http://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
 # Source0-md5:	33adb18c3048d057ac58d07a3f1adb38
 URL:		http://sources.redhat.com/binutils/
-BuildRequires:	automake
+BuildRequires:	autoconf >= 2.64
+BuildRequires:	automake >= 1:1.9
 BuildRequires:	bash
 BuildRequires:	bison
 BuildRequires:	flex
@@ -57,7 +58,9 @@ BuildRequires:	sparc32
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		target		avr
-%define		arch		%{_prefix}/%{target}
+%define		archprefix	%{_prefix}/%{target}
+%define		archbindir	%{archprefix}/bin
+%define		archlibdir	%{archprefix}/lib
 
 %description
 Binutils is a collection of binary utilities, including:
@@ -70,8 +73,7 @@ Binutils is a collection of binary utilities, including:
 - strings - list printable strings from files,
 - strip - discard symbols,
 - c++filt - a filter for demangling encoded C++ symbols,
-- addr2line - convert addresses to file and line,
-- nlmconv - convert object code into an NLM.
+- addr2line - convert addresses to file and line.
 
 This package contains the cross version for Atmel AVR.
 
@@ -132,20 +134,18 @@ done
 CFLAGS="%{rpmcflags}" \
 LDFLAGS="%{rpmldflags}" \
 CONFIG_SHELL="/bin/bash" \
-%ifarch sparc
-sparc32 \
-%endif
 ./configure \
-	--enable-gold \
-	--disable-shared \
-	--disable-werror \
+	MAKEINFO=/bin/true \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
 	--mandir=%{_mandir} \
 	--infodir=%{_infodir} \
 	--host=%{_target_platform} \
 	--build=%{_target_platform} \
-	--target=%{target}
+	--target=%{target} \
+	--enable-gold \
+	--disable-shared \
+	--disable-werror
 
 # We have to regenerate headers after patching.
 %{__make} configure-host \
@@ -165,6 +165,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_prefix}
 
 %{__make} install \
+	MAKEINFO=/bin/true \
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
 	mandir=$RPM_BUILD_ROOT%{_mandir} \
 	infodir=$RPM_BUILD_ROOT%{_infodir} \
@@ -172,11 +173,13 @@ install -d $RPM_BUILD_ROOT%{_prefix}
 
 # remove these man pages unless we cross-build for win*/netware platforms.
 # however, this should be done in Makefiles.
-rm -f $RPM_BUILD_ROOT%{_mandir}/man1/{*dlltool,*nlmconv,*windres}.1
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/{*dlltool,*nlmconv,*windmc,*windres}.1
 
-rm -f $RPM_BUILD_ROOT%{_datadir}/locale/*/LC_MESSAGES/*.mo
-rm -f $RPM_BUILD_ROOT%{_libdir}/libiberty.a
-rm -rf $RPM_BUILD_ROOT%{_infodir}
+# rely on system locales and info documentation
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}
+%{__rm} -r $RPM_BUILD_ROOT%{_infodir}
+
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libiberty.a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -184,11 +187,47 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README
-%attr(755,root,root) %{_bindir}/%{target}-*
-%dir %{arch}
-%dir %{arch}/bin
-%attr(755,root,root) %{arch}/bin/*
-%dir %{arch}/lib
-%dir %{arch}/lib/*
-%{arch}/lib/*/*
-%{_mandir}/man?/%{target}-*
+%attr(755,root,root) %{_bindir}/%{target}-addr2line
+%attr(755,root,root) %{_bindir}/%{target}-ar
+%attr(755,root,root) %{_bindir}/%{target}-as
+%attr(755,root,root) %{_bindir}/%{target}-c++filt
+%attr(755,root,root) %{_bindir}/%{target}-elfedit
+%attr(755,root,root) %{_bindir}/%{target}-gprof
+%attr(755,root,root) %{_bindir}/%{target}-ld
+%attr(755,root,root) %{_bindir}/%{target}-ld.bfd
+%attr(755,root,root) %{_bindir}/%{target}-nm
+%attr(755,root,root) %{_bindir}/%{target}-objcopy
+%attr(755,root,root) %{_bindir}/%{target}-objdump
+%attr(755,root,root) %{_bindir}/%{target}-ranlib
+%attr(755,root,root) %{_bindir}/%{target}-readelf
+%attr(755,root,root) %{_bindir}/%{target}-size
+%attr(755,root,root) %{_bindir}/%{target}-strings
+%attr(755,root,root) %{_bindir}/%{target}-strip
+%dir %{archprefix}
+%dir %{archbindir}
+%attr(755,root,root) %{archbindir}/ar
+%attr(755,root,root) %{archbindir}/as
+%attr(755,root,root) %{archbindir}/ld
+%attr(755,root,root) %{archbindir}/ld.bfd
+%attr(755,root,root) %{archbindir}/nm
+%attr(755,root,root) %{archbindir}/objcopy
+%attr(755,root,root) %{archbindir}/objdump
+%attr(755,root,root) %{archbindir}/ranlib
+%attr(755,root,root) %{archbindir}/strip
+%dir %{archlibdir}
+%{archlibdir}/ldscripts
+%{_mandir}/man1/%{target}-addr2line.1*
+%{_mandir}/man1/%{target}-ar.1*
+%{_mandir}/man1/%{target}-as.1*
+%{_mandir}/man1/%{target}-c++filt.1*
+%{_mandir}/man1/%{target}-elfedit.1*
+%{_mandir}/man1/%{target}-gprof.1*
+%{_mandir}/man1/%{target}-ld.1*
+%{_mandir}/man1/%{target}-nm.1*
+%{_mandir}/man1/%{target}-objcopy.1*
+%{_mandir}/man1/%{target}-objdump.1*
+%{_mandir}/man1/%{target}-ranlib.1*
+%{_mandir}/man1/%{target}-readelf.1*
+%{_mandir}/man1/%{target}-size.1*
+%{_mandir}/man1/%{target}-strings.1*
+%{_mandir}/man1/%{target}-strip.1*
