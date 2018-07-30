@@ -6,8 +6,12 @@ Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - AV
 Summary(tr.UTF-8):	GNU geliştirme araçları - AVR binutils
 Name:		crossavr-binutils
 Version:	2.23.1
-Release:	1
+Release:	2
 Epoch:		1
+License:	GPL v3+
+Group:		Development/Tools
+Source0:	http://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
+# Source0-md5:	33adb18c3048d057ac58d07a3f1adb38
 Patch0:		am.patch
 # Patches 1xx are taken form Atmel official AVR8-GNU toolchain version 3.4.2
 # http://distribute.atmel.no/tools/opensource/Atmel-AVR-Toolchain-3.4.2/avr/avr-patches.tar.gz
@@ -38,10 +42,6 @@ Patch123:	410-binutils-atmega64hve2.patch
 Patch124:	411-binutils-attiny474.patch
 Patch125:	412-binutils-atmxts200.patch
 Patch126:	500-binutils-avrtc530-backported.patch
-License:	GPL
-Group:		Development/Tools
-Source0:	http://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
-# Source0-md5:	33adb18c3048d057ac58d07a3f1adb38
 URL:		http://sources.redhat.com/binutils/
 BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.9
