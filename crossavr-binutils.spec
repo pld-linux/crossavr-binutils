@@ -87,34 +87,34 @@ Ten pakiet zawiera wersję skrośną generującą kod dla Atmel AVR.
 
 %prep
 %setup -q -n binutils-%{version}
-%patch0 -p1
-%patch100 -p0
-%patch101 -p0
-%patch102 -p0
-%patch103 -p0
-%patch104 -p0
-%patch105 -p0
-%patch106 -p0
-%patch107 -p0
-%patch108 -p0
-%patch109 -p0
-%patch110 -p0
-%patch111 -p0
-%patch112 -p0
-%patch113 -p0
-%patch114 -p0
-%patch115 -p0
-%patch116 -p0
-%patch117 -p0
-%patch118 -p0
-%patch119 -p0
-%patch120 -p0
-%patch121 -p0
-%patch122 -p0
-%patch123 -p0
-%patch124 -p0
-%patch125 -p0
-%patch126 -p0
+%patch -P0 -p1
+%patch -P100 -p0
+%patch -P101 -p0
+%patch -P102 -p0
+%patch -P103 -p0
+%patch -P104 -p0
+%patch -P105 -p0
+%patch -P106 -p0
+%patch -P107 -p0
+%patch -P108 -p0
+%patch -P109 -p0
+%patch -P110 -p0
+%patch -P111 -p0
+%patch -P112 -p0
+%patch -P113 -p0
+%patch -P114 -p0
+%patch -P115 -p0
+%patch -P116 -p0
+%patch -P117 -p0
+%patch -P118 -p0
+%patch -P119 -p0
+%patch -P120 -p0
+%patch -P121 -p0
+%patch -P122 -p0
+%patch -P123 -p0
+%patch -P124 -p0
+%patch -P125 -p0
+%patch -P126 -p0
 
 # Remove hacks for specific autoconf version.
 echo > config/override.m4
