@@ -6,7 +6,7 @@ Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - AV
 Summary(tr.UTF-8):	GNU geliştirme araçları - AVR binutils
 Name:		crossavr-binutils
 Version:	2.23.1
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Tools
