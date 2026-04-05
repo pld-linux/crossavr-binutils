@@ -5,43 +5,13 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla AVR - binutils
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - AVR binutils
 Summary(tr.UTF-8):	GNU geliştirme araçları - AVR binutils
 Name:		crossavr-binutils
-Version:	2.23.1
-Release:	3
+Version:	2.46
+Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Tools
-Source0:	http://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
-# Source0-md5:	33adb18c3048d057ac58d07a3f1adb38
-Patch0:		am.patch
-# Patches 1xx are taken form Atmel official AVR8-GNU toolchain version 3.4.2
-# http://distribute.atmel.no/tools/opensource/Atmel-AVR-Toolchain-3.4.2/avr/avr-patches.tar.gz
-Patch100:	001-xmega-Makefile_am-typo.patch
-Patch101:	002-tinycore-support.patch
-Patch102:	003-RMW-insn-constriant.patch
-Patch103:	004-new-part-supports.patch
-Patch104:	005-additional-part-supports.patch
-Patch105:	006-xmega-showuage-typo.patch
-Patch106:	007-ata6289-architecture-correction.patch
-Patch107:	008-add-usersig-section.patch
-Patch108:	009-dwarf-relax-fix.patch
-Patch109:	010-disable-demand-paging.patch
-Patch110:	200-binutils-avr-size.patch
-Patch111:	201-binutils-dwarf2-AVRStudio-workaround.patch
-Patch112:	202-binutils-bug13113.patch
-Patch113:	400-binutils-atmxt336s.patch
-Patch114:	401-binutils-atmega48hvf.patch
-Patch115:	402-binutils-atmega26hvg.patch
-Patch116:	403-binutils-atmxt224_224e.patch
-Patch117:	404-binutils-atmxt112sl.patch
-Patch118:	405-binutils-atmxt540s.patch
-Patch119:	406-binutils-ata5831.patch
-Patch120:	407-binutils-attiny841.patch
-Patch121:	408-binutils-atmegarfa2.patch
-Patch122:	409-binutils-ata5790n.patch
-Patch123:	410-binutils-atmega64hve2.patch
-Patch124:	411-binutils-attiny474.patch
-Patch125:	412-binutils-atmxts200.patch
-Patch126:	500-binutils-avrtc530-backported.patch
+Source0:	https://ftp.gnu.org/gnu/binutils/binutils-with-gold-%{version}.tar.lz
+# Source0-md5:	e221b6201b7234e3e7733e878ff476c4
 URL:		http://sources.redhat.com/binutils/
 BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.9
@@ -86,35 +56,7 @@ programów i bibliotek.
 Ten pakiet zawiera wersję skrośną generującą kod dla Atmel AVR.
 
 %prep
-%setup -q -n binutils-%{version}
-%patch -P0 -p1
-%patch -P100 -p0
-%patch -P101 -p0
-%patch -P102 -p0
-%patch -P103 -p0
-%patch -P104 -p0
-%patch -P105 -p0
-%patch -P106 -p0
-%patch -P107 -p0
-%patch -P108 -p0
-%patch -P109 -p0
-%patch -P110 -p0
-%patch -P111 -p0
-%patch -P112 -p0
-%patch -P113 -p0
-%patch -P114 -p0
-%patch -P115 -p0
-%patch -P116 -p0
-%patch -P117 -p0
-%patch -P118 -p0
-%patch -P119 -p0
-%patch -P120 -p0
-%patch -P121 -p0
-%patch -P122 -p0
-%patch -P123 -p0
-%patch -P124 -p0
-%patch -P125 -p0
-%patch -P126 -p0
+%setup -q -n binutils-with-gold-%{version}
 
 # Remove hacks for specific autoconf version.
 echo > config/override.m4
@@ -173,13 +115,11 @@ install -d $RPM_BUILD_ROOT%{_prefix}
 
 # remove these man pages unless we cross-build for win*/netware platforms.
 # however, this should be done in Makefiles.
-%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/{*dlltool,*nlmconv,*windmc,*windres}.1
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/{*dlltool,*windmc,*windres}.1
 
 # rely on system locales and info documentation
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}
 %{__rm} -r $RPM_BUILD_ROOT%{_infodir}
-
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libiberty.a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
